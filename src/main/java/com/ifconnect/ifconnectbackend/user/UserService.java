@@ -1,6 +1,6 @@
 package com.ifconnect.ifconnectbackend.user;
 
-import com.ifconnect.ifconnectbackend.models.User;
+import com.ifconnect.ifconnectbackend.models.Usuario;
 import com.ifconnect.ifconnectbackend.requestmodels.ChangePasswordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -17,7 +17,7 @@ public class UserService {
     private final UserRepository repository;
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
 
-        var user = (User) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        var user = (Usuario) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
         // check if the current password is correct
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {

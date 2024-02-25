@@ -1,6 +1,6 @@
 package com.ifconnect.ifconnectbackend.token;
 
-import com.ifconnect.ifconnectbackend.models.User;
+import com.ifconnect.ifconnectbackend.models.Usuario;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,5 +30,5 @@ public class Token {
 
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")
-  public User user;
+  public Usuario user;
 }

@@ -1,6 +1,6 @@
 package com.ifconnect.ifconnectbackend.auditing;
 
-import com.ifconnect.ifconnectbackend.models.User;
+import com.ifconnect.ifconnectbackend.models.Usuario;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -22,7 +22,7 @@ public class ApplicationAuditAware implements AuditorAware<Integer> {
             return Optional.empty();
         }
 
-        User userPrincipal = (User) authentication.getPrincipal();
+        Usuario userPrincipal = (Usuario) authentication.getPrincipal();
         return Optional.ofNullable(userPrincipal.getId());
     }
 }

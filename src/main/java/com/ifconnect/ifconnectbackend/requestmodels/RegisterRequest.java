@@ -1,5 +1,6 @@
 package com.ifconnect.ifconnectbackend.requestmodels;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ifconnect.ifconnectbackend.models.Aluno;
 import com.ifconnect.ifconnectbackend.models.Professor;
 import com.ifconnect.ifconnectbackend.models.enums.Role;
@@ -19,6 +20,7 @@ public class RegisterRequest {
   private String nome;
   private String email;
   private String password;
+  @JsonFormat(pattern="dd/MM/yyyy")
   private Date dataNasc;
   private Aluno aluno;
   private Professor professor;
