@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ifconnect.ifconnectbackend.models.enums.Role;
 import com.ifconnect.ifconnectbackend.token.Token;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +20,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "_user")
+@Table(name = "usuarios")
 public class Usuario implements UserDetails {
 
     @Id
@@ -26,15 +28,20 @@ public class Usuario implements UserDetails {
     private Integer id;
 
     @Column(unique = true)
+    @NotBlank(message = "${notblank}")
+    @Size(min = 3, max = 100, message = "${size}")
     private String nome;
 
     @JsonIgnore
+    @NotBlank(message = "${notblank}")
     private String password;
 
     @Column(unique = true)
+    @NotBlank(message = "${notblank}")
     private String email;
 
     @JsonFormat(pattern="dd/MM/yyyy")
+    @NotBlank(message = "${notblank}")
     private Date dataNasc;
 
     @Embedded
@@ -43,11 +50,23 @@ public class Usuario implements UserDetails {
     @Embedded
     private Professor professor;
 
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "usuario_grupo",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_grupo"))
+    private List<Grupo> grupos;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "usuario_turma",
+            joinColumns = @JoinColumn(name = "id_usuario"),
+            inverseJoinColumns = @JoinColumn(name = "id_turma"))
+    private List<Turma> turmas;
+
     @Enumerated(EnumType.STRING)
     @JsonIgnore
     private Role role;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "usuario")
     @JsonIgnore
     private List<Token> tokens;
 

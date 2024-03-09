@@ -1,0 +1,11 @@
+cursos
+locais
+usuarios
+grupos
+turmas
+encontros
+token
+agendamentos
+mensagens
+usuario_grupo
+usuario_turma

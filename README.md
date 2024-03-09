@@ -1,6 +1,8 @@
-# To portmap
+# SchemaSpy comands
 
-$ ssh -i rerison.first.pem rerison.first@rerison-51209.portmap.host -N -R 51209:localhost:8080
+$ docker pull schemaspy/schemaspy
+
+$ java -jar schemaspy.jar -vizjs -t pgsql -db ifconnectdb -host localhost -port 5432 -dp postgresjdbcdriver.jar -u postgres -p postgres -o schemaspy
 
 # Swagger acess
 
