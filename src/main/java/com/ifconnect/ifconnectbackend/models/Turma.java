@@ -1,7 +1,12 @@
 package com.ifconnect.ifconnectbackend.models;
 
+import com.ifconnect.ifconnectbackend.models.enums.Turno;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -9,13 +14,16 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "turma")
+@Table(name = "turmas")
 public class Turma extends Agrupamento{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
 
+    @NotBlank(message = "${notblank}")
+    @Size(min = 3, max = 100, message = "${size}")
     private String disciplina;
 
-    private String Turno;
+    @NotBlank(message = "${notblank}")
+    private Turno Turno;
+
+    @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
+    private List<Usuario> usuarios;
 }

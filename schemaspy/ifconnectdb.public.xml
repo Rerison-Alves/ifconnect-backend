@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?><database name="ifconnectdb" schema="public" type="PostgreSQL - 16.2 (Debian 16.2-1.pgdg120+2)">
+   <sequences>
+      <sequence increment="1" name="agendamentos_id_seq" startValue="1"/>
+      <sequence increment="1" name="cursos_id_seq" startValue="1"/>
+      <sequence increment="1" name="encontros_id_seq" startValue="1"/>
+      <sequence increment="1" name="grupos_id_seq" startValue="1"/>
+      <sequence increment="1" name="locais_id_seq" startValue="1"/>
+      <sequence increment="1" name="mensagens_id_seq" startValue="1"/>
+      <sequence increment="50" name="token_seq" startValue="1"/>
+      <sequence increment="1" name="turmas_id_seq" startValue="1"/>
+      <sequence increment="1" name="usuarios_id_seq" startValue="1"/>
+   </sequences>
+   <tables>
+      <table name="agendamentos" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="encontro_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkl7yc8s6jbymto0m6auybj40ad" implied="false" onDeleteCascade="false" schema="public" table="encontros"/>
+         </column>
+         <column autoUpdated="true" defaultValue="nextval('agendamentos_id_seq'::regclass)" digits="0" id="1" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="local_id" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fk9vp3jbe1l0mvt7dsibbkc2r0m" implied="false" onDeleteCascade="false" schema="public" table="locais"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="end_time" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="4" name="start_time" nullable="false" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="agendamentos_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="cursos" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('cursos_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="id_curso" foreignKey="fkot5rhgvxmkysx50t6u1f1kku9" implied="false" onDeleteCascade="false" schema="public" table="grupos"/>
+            <child column="id_curso" foreignKey="fkeclp312ly7o9o1ijnxeprg4u8" implied="false" onDeleteCascade="false" schema="public" table="turmas"/>
+            <child column="id_curso" foreignKey="fkoyibg1ow4bf1dsqx1wx1ht06h" implied="false" onDeleteCascade="false" schema="public" table="usuarios"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="status" nullable="true" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="descricao" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="observacao" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="turno" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="cursos_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <checkConstraint constraint="(((turno)::text = ANY ((ARRAY['MANHA'::character varying, 'TARDE'::character varying, 'NOITE'::character varying])::text[])))" name="cursos_turno_check"/>
+      </table>
+      <table name="encontros" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('encontros_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="encontro_id" foreignKey="fkl7yc8s6jbymto0m6auybj40ad" implied="false" onDeleteCascade="false" schema="public" table="agendamentos"/>
+            <child column="id_encontro" foreignKey="fkdqnhyndbaou3drs403c885pw4" implied="false" onDeleteCascade="false" schema="public" table="mensagens"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id_grupo" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkind607a2hi3hc48kkfi1502ms" implied="false" onDeleteCascade="false" schema="public" table="grupos"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="id_turma" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fk6ph6yggxmwsbetukc6k0s4j6q" implied="false" onDeleteCascade="false" schema="public" table="turmas"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="tema" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="descricao" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="encontros_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="grupos" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('grupos_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="id_grupo" foreignKey="fkind607a2hi3hc48kkfi1502ms" implied="false" onDeleteCascade="false" schema="public" table="encontros"/>
+            <child column="id_grupo" foreignKey="fkpy161liudc6qm8t1qmfmob3ju" implied="false" onDeleteCascade="false" schema="public" table="usuario_grupo"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id_curso" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkot5rhgvxmkysx50t6u1f1kku9" implied="false" onDeleteCascade="false" schema="public" table="cursos"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="id_user" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fk93mstficguer9c0g9rw1i8q6x" implied="false" onDeleteCascade="false" schema="public" table="usuarios"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="areade_estudo" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="nome" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="descricao" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="grupos_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="grupos_nome_key" unique="true">
+            <column ascending="true" name="nome"/>
+         </index>
+      </table>
+      <table name="locais" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('locais_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="local_id" foreignKey="fk9vp3jbe1l0mvt7dsibbkc2r0m" implied="false" onDeleteCascade="false" schema="public" table="agendamentos"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="localizacao" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="nome" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="locais_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="locais_nome_key" unique="true">
+            <column ascending="true" name="nome"/>
+         </index>
+      </table>
+      <table name="mensagens" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('mensagens_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id_encontro" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkdqnhyndbaou3drs403c885pw4" implied="false" onDeleteCascade="false" schema="public" table="encontros"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="id_user" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkk11035ngil8wxyxav9jjhns8w" implied="false" onDeleteCascade="false" schema="public" table="usuarios"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="3" name="data" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="pdf_base64" nullable="true" remarks="" size="10" type="oid" typeCode="-5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="texto" nullable="false" remarks="" size="10" type="oid" typeCode="-5"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="mensagens_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+      </table>
+      <table name="token" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="expired" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id" nullable="false" remarks="" size="10" type="int4" typeCode="4"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="id_usuario" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fk7avajgiq070h598k4yptraf73" implied="false" onDeleteCascade="false" schema="public" table="usuarios"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="revoked" nullable="false" remarks="" size="1" type="bool" typeCode="-7"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="token" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="token_type" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="token_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="token_token_key" unique="true">
+            <column ascending="true" name="token"/>
+         </index>
+         <checkConstraint constraint="(((token_type)::text = 'BEARER'::text))" name="token_token_type_check"/>
+      </table>
+      <table name="turmas" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('turmas_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="id_turma" foreignKey="fk6ph6yggxmwsbetukc6k0s4j6q" implied="false" onDeleteCascade="false" schema="public" table="encontros"/>
+            <child column="id_turma" foreignKey="fkk1tluxjmmcblvupp138em7v7d" implied="false" onDeleteCascade="false" schema="public" table="usuario_turma"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id_curso" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkeclp312ly7o9o1ijnxeprg4u8" implied="false" onDeleteCascade="false" schema="public" table="cursos"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="2" name="id_user" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fk99d0xmucaaw9tcih3bsger50" implied="false" onDeleteCascade="false" schema="public" table="usuarios"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="turno" nullable="true" remarks="" size="5" type="int2" typeCode="5"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="disciplina" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="nome" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="descricao" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="turmas_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="turmas_nome_key" unique="true">
+            <column ascending="true" name="nome"/>
+         </index>
+         <checkConstraint constraint="(((turno &gt;= 0) AND (turno &lt;= 2)))" name="turmas_turno_check"/>
+      </table>
+      <table name="usuario_grupo" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id_grupo" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkpy161liudc6qm8t1qmfmob3ju" implied="false" onDeleteCascade="false" schema="public" table="grupos"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id_usuario" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkifutb4rlxy5i3n8slkgjn43d5" implied="false" onDeleteCascade="false" schema="public" table="usuarios"/>
+         </column>
+      </table>
+      <table name="usuario_turma" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="false" defaultValue="null" digits="0" id="0" name="id_turma" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkk1tluxjmmcblvupp138em7v7d" implied="false" onDeleteCascade="false" schema="public" table="turmas"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id_usuario" nullable="false" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkk6oyvui64lyig96yud9tbyim2" implied="false" onDeleteCascade="false" schema="public" table="usuarios"/>
+         </column>
+      </table>
+      <table name="usuarios" remarks="" schema="public" type="TABLE">
+         <column autoUpdated="true" defaultValue="nextval('usuarios_id_seq'::regclass)" digits="0" id="0" name="id" nullable="false" remarks="" size="10" type="serial" typeCode="4">
+            <child column="id_user" foreignKey="fk93mstficguer9c0g9rw1i8q6x" implied="false" onDeleteCascade="false" schema="public" table="grupos"/>
+            <child column="id_user" foreignKey="fkk11035ngil8wxyxav9jjhns8w" implied="false" onDeleteCascade="false" schema="public" table="mensagens"/>
+            <child column="id_usuario" foreignKey="fk7avajgiq070h598k4yptraf73" implied="false" onDeleteCascade="false" schema="public" table="token"/>
+            <child column="id_user" foreignKey="fk99d0xmucaaw9tcih3bsger50" implied="false" onDeleteCascade="false" schema="public" table="turmas"/>
+            <child column="id_usuario" foreignKey="fkifutb4rlxy5i3n8slkgjn43d5" implied="false" onDeleteCascade="false" schema="public" table="usuario_grupo"/>
+            <child column="id_usuario" foreignKey="fkk6oyvui64lyig96yud9tbyim2" implied="false" onDeleteCascade="false" schema="public" table="usuario_turma"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="1" name="id_curso" nullable="true" remarks="" size="10" type="int4" typeCode="4">
+            <parent column="id" foreignKey="fkoyibg1ow4bf1dsqx1wx1ht06h" implied="false" onDeleteCascade="false" schema="public" table="cursos"/>
+         </column>
+         <column autoUpdated="false" defaultValue="null" digits="6" id="2" name="data_nasc" nullable="true" remarks="" size="29" type="timestamp" typeCode="93"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="3" name="dtype" nullable="false" remarks="" size="31" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="4" name="nome" nullable="true" remarks="" size="100" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="5" name="email" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="6" name="matricula" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="7" name="password" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="role" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="siape" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="situacao" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <primaryKey column="id" sequenceNumberInPK="1"/>
+         <index name="usuarios_pkey" unique="true">
+            <column ascending="true" name="id"/>
+         </index>
+         <index name="usuarios_email_key" unique="true">
+            <column ascending="true" name="email"/>
+         </index>
+         <index name="usuarios_matricula_key" unique="true">
+            <column ascending="true" name="matricula"/>
+         </index>
+         <index name="usuarios_nome_key" unique="true">
+            <column ascending="true" name="nome"/>
+         </index>
+         <index name="usuarios_siape_key" unique="true">
+            <column ascending="true" name="siape"/>
+         </index>
+         <checkConstraint constraint="(((role)::text = ANY ((ARRAY['USER'::character varying, 'ADMIN'::character varying, 'MANAGER'::character varying])::text[])))" name="usuarios_role_check"/>
+         <checkConstraint constraint="(((situacao)::text = ANY ((ARRAY['ATIVO'::character varying, 'INATIVO'::character varying, 'AFASTADO'::character varying, 'LICENCA'::character varying])::text[])))" name="usuarios_situacao_check"/>
+      </table>
+   </tables>
+</database>

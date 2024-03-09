@@ -1,7 +1,11 @@
 package com.ifconnect.ifconnectbackend.models;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.*;
+
+import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -9,13 +13,14 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "grupo")
+@Table(name = "grupos")
 public class Grupo extends Agrupamento{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-
+    @NotBlank(message = "${notblank}")
+    @Size(min = 3, max = 100, message = "${size}")
     private String areadeEstudo;
+
+    @ManyToMany(mappedBy = "grupos", fetch = FetchType.LAZY)
+    private List<Usuario> usuarios;
 
 }

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 import static com.ifconnect.ifconnectbackend.models.enums.Permission.*;
 
+@Getter
 @RequiredArgsConstructor
 public enum Role {
 
@@ -38,7 +39,6 @@ public enum Role {
 
     ;
 
-    @Getter
     private final Set<Permission> permissions;
 
     public List<SimpleGrantedAuthority> getAuthorities() {

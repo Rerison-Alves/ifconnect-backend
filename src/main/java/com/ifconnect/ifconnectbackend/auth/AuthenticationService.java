@@ -41,7 +41,7 @@ public class AuthenticationService {
   public ResponseEntity<?> register(RegisterRequest request) {
     var user = Usuario.builder()
             .nome(request.getNome())
-            .password(passwordEncoder.encode(request.getPassword()))
+            .password(passwordEncoder.encode(request.getPassword()!=null?request.getPassword():""))
             .email(request.getEmail())
             .dataNasc(request.getDataNasc())
             .aluno(request.getAluno())
@@ -88,9 +88,9 @@ public class AuthenticationService {
     }
   }
 
-  private void saveUserToken(Usuario user, String jwtToken) {
+  private void saveUserToken(Usuario usuario, String jwtToken) {
     var token = Token.builder()
-        .user(user)
+        .usuario(usuario)
         .token(jwtToken)
         .tokenType(TokenType.BEARER)
         .expired(false)

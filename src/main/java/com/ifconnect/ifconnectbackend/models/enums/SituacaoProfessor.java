@@ -1,5 +1,10 @@
 package com.ifconnect.ifconnectbackend.models.enums;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@Getter
+@RequiredArgsConstructor
 public enum SituacaoProfessor {
     ATIVO("Ativo"),
     INATIVO("Inativo"),
@@ -7,12 +12,4 @@ public enum SituacaoProfessor {
     LICENCA("Licença");
 
     private final String descricao;
-
-    SituacaoProfessor(String descricao) {
-        this.descricao = descricao;
-    }
-
-    public String getDescricao() {
-        return descricao;
-    }
 }
