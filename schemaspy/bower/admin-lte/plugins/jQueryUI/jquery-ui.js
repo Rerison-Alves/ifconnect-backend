@@ -796,7 +796,7 @@ $.Widget.prototype = {
 		event.type = ( type === this.widgetEventPrefix ?
 			type :
 			this.widgetEventPrefix + type ).toLowerCase();
-		// the original event may come from any element
+		// the original event may come from any element,
 		// so we need to reset the target on the new event
 		event.target = this.element[ 0 ];
 
@@ -15476,7 +15476,7 @@ var tabs = $.widget( "ui.tabs", {
 		if ( !event.ctrlKey && !event.metaKey ) {
 
 			// Update aria-selected immediately so that AT think the tab is already selected.
-			// Otherwise AT may confuse the user by stating that they need to activate the tab,
+			// Otherwise, AT may confuse the user by stating that they need to activate the tab,
 			// but the tab will already be activated by the time the announcement finishes.
 			focusedTab.attr( "aria-selected", "false" );
 			this.tabs.eq( selectedIndex ).attr( "aria-selected", "true" );
