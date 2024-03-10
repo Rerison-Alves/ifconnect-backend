@@ -2,15 +2,15 @@ package com.ifconnect.ifconnectbackend.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifconnect.ifconnectbackend.config.JwtService;
+import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
 import com.ifconnect.ifconnectbackend.models.Usuario;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationRequest;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationResponse;
-import com.ifconnect.ifconnectbackend.requestmodels.ErrorResponse;
 import com.ifconnect.ifconnectbackend.requestmodels.RegisterRequest;
 import com.ifconnect.ifconnectbackend.token.Token;
 import com.ifconnect.ifconnectbackend.token.TokenRepository;
 import com.ifconnect.ifconnectbackend.token.TokenType;
-import com.ifconnect.ifconnectbackend.user.UserRepository;
+import com.ifconnect.ifconnectbackend.usuario.UsuarioRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +25,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 
 import static com.ifconnect.ifconnectbackend.auth.AutheticationValidator.handleDuplicateError;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
-  private final UserRepository repository;
+  private final UsuarioRepository repository;
   private final TokenRepository tokenRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
@@ -42,6 +42,7 @@ public class AuthenticationService {
     var user = Usuario.builder()
             .nome(request.getNome())
             .password(passwordEncoder.encode(request.getPassword()!=null?request.getPassword():""))
+            .fotoPerfilBase64(request.getFotoPerfilBase64())
             .email(request.getEmail())
             .dataNasc(request.getDataNasc())
             .aluno(request.getAluno())
@@ -82,7 +83,8 @@ public class AuthenticationService {
     } catch (AuthenticationException e) {
       // Se ocorrer uma exceção de autenticação, isso significa que as credenciais estão inválidas
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-              .body(new ErrorResponse(
+              .body(new ErrorDetails(
+                      new Date(),
                       "Credenciais inválidas. Verifique seu email e senha.",
                       HttpStatus.UNAUTHORIZED.name()));
     }

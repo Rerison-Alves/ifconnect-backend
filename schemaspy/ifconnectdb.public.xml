@@ -191,6 +191,7 @@
          <column autoUpdated="false" defaultValue="null" digits="0" id="8" name="role" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="9" name="siape" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
          <column autoUpdated="false" defaultValue="null" digits="0" id="10" name="situacao" nullable="true" remarks="" size="255" type="varchar" typeCode="12"/>
+         <column autoUpdated="false" defaultValue="null" digits="0" id="11" name="foto_perfil_base64" nullable="true" remarks="" size="10" type="oid" typeCode="-5"/>
          <primaryKey column="id" sequenceNumberInPK="1"/>
          <index name="usuarios_pkey" unique="true">
             <column ascending="true" name="id"/>

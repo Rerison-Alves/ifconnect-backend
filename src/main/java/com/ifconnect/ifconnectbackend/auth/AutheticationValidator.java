@@ -1,14 +1,16 @@
 package com.ifconnect.ifconnectbackend.auth;
 
+import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
 import com.ifconnect.ifconnectbackend.models.Usuario;
-import com.ifconnect.ifconnectbackend.requestmodels.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import java.util.Date;
 
 public class AutheticationValidator {
 
     private static final String ERRO_DUPLICATE = "Detalhe: Key (%s)=(%s) already exists.";
-    public static ResponseEntity<ErrorResponse> handleDuplicateError(String message, Usuario user) {
+    public static ResponseEntity<ErrorDetails> handleDuplicateError(String message, Usuario user) {
         String errorMessage = "";
 
         if (containsDuplicateError(message, "nome", user.getNome())) {
@@ -24,7 +26,7 @@ public class AutheticationValidator {
         }
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ErrorResponse(errorMessage, HttpStatus.BAD_REQUEST.name()));
+                .body(new ErrorDetails(new Date(), errorMessage, HttpStatus.BAD_REQUEST.name()));
     }
 
     public static boolean containsDuplicateError(String message, String fieldName, String fieldValue) {

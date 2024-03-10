@@ -8,6 +8,8 @@ import lombok.Setter;
 
 import java.util.List;
 
+@Getter
+@Setter
 @MappedSuperclass
 public abstract class Agrupamento {
 

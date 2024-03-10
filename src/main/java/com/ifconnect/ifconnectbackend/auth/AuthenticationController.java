@@ -34,6 +34,7 @@ public class AuthenticationController {
               .body(responseEntity.getBody());
     }
   }
+
   @PostMapping("/authenticate")
   public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
     ResponseEntity<?> responseEntity = service.authenticate(request);

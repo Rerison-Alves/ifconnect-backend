@@ -40,6 +40,9 @@ public class Usuario implements UserDetails {
     @NotBlank(message = "${notblank}")
     private String email;
 
+    @Lob
+    private String fotoPerfilBase64;
+
     @JsonFormat(pattern="dd/MM/yyyy")
     @NotBlank(message = "${notblank}")
     private Date dataNasc;
@@ -54,12 +57,14 @@ public class Usuario implements UserDetails {
     @JoinTable(name = "usuario_grupo",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_grupo"))
+    @JsonIgnore
     private List<Grupo> grupos;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_turma",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_turma"))
+    @JsonIgnore
     private List<Turma> turmas;
 
     @Enumerated(EnumType.STRING)

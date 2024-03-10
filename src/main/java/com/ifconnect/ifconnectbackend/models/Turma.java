@@ -22,7 +22,7 @@ public class Turma extends Agrupamento{
     private String disciplina;
 
     @NotBlank(message = "${notblank}")
-    private Turno Turno;
+    private Turno turno;
 
     @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
     private List<Usuario> usuarios;

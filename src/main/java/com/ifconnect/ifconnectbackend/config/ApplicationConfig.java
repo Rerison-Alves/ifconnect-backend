@@ -1,7 +1,7 @@
 package com.ifconnect.ifconnectbackend.config;
 
 import com.ifconnect.ifconnectbackend.auditing.ApplicationAuditAware;
-import com.ifconnect.ifconnectbackend.user.UserRepository;
+import com.ifconnect.ifconnectbackend.usuario.UsuarioRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,7 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-  private final UserRepository repository;
+  private final UsuarioRepository repository;
 
   @Bean
   public UserDetailsService userDetailsService() {

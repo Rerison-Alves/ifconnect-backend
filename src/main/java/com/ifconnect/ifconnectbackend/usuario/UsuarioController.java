@@ -1,8 +1,9 @@
-package com.ifconnect.ifconnectbackend.curso;
+package com.ifconnect.ifconnectbackend.usuario;
 
 import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
-import com.ifconnect.ifconnectbackend.models.Curso;
+import com.ifconnect.ifconnectbackend.models.Usuario;
 import com.ifconnect.ifconnectbackend.models.modelvo.SearchFilter;
+import com.ifconnect.ifconnectbackend.requestmodels.ChangePasswordRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -13,40 +14,24 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Objects;
 
 import static io.vavr.API.*;
 import static io.vavr.Predicates.isIn;
 import static org.springframework.http.ResponseEntity.*;
-import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequestUri;
 
 @RestController
-@RequestMapping("/api/v1/cursos")
+@RequestMapping("/api/v1/usuarios")
 @RequiredArgsConstructor
-public class CursoController {
+public class UsuarioController {
 
-    private final CursoService service;
+    private final UsuarioService service;
 
-    @Operation(summary = " Save cursos", description = "Return save cursos")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Request Ok"),
-            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
-            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
-            @ApiResponse(responseCode = "404", description = "Resource not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
-    @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<Curso> save(@RequestBody @Valid Curso entity) {
-        return created(fromCurrentRequestUri().path(service.saveOrUpdate(entity).getId().toString()).build().toUri()).body(entity);
-    }
-
-    @Operation(summary = "Cursos by id.", description = "Return the cursos by id.")
+    @Operation(summary = "Usuarios by id.", description = "Return the usuarios by id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -56,10 +41,10 @@ public class CursoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("{id}")
-    public ResponseEntity<Curso> getOne(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Usuario> getOne(@PathVariable(value = "id") Integer id) {
         return ok().body(service.findById(id));
     }
-    @Operation(summary = "List of cursos.", description = "List of cursos.")
+    @Operation(summary = "List of usuarios.", description = "List of usuarios.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -69,11 +54,11 @@ public class CursoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/get-all")
-    public ResponseEntity<List<Curso>> getAll() {
+    public ResponseEntity<List<Usuario>> getAll() {
         return ok().body(service.findAll());
     }
 
-    @Operation(summary = "The list of cursos Pageable.", description = "Returns the list of entities.")
+    @Operation(summary = "The list of usuarios Pageable.", description = "Returns the list of entities.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -83,7 +68,7 @@ public class CursoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("search")
-    public ResponseEntity<Page<Curso>> search(@RequestParam("searchTerm") String searchTerm,
+    public ResponseEntity<Page<Usuario>> search(@RequestParam("searchTerm") String searchTerm,
                                               @RequestParam(value = "order", required = false, defaultValue = "descricao") String order,
                                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                               @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
@@ -94,10 +79,10 @@ public class CursoController {
                     throw new IllegalArgumentException("The sent sorting field is invalid. Available fields: 'id' and 'descricao.");
                 })
         );
-        return ResponseEntity.ok(service.cursoPageable(searchFilter));
+        return ResponseEntity.ok(service.usuarioPageable(searchFilter));
     }
 
-    @Operation(summary = "Update cursos ", description = "Return Update cursos ")
+    @Operation(summary = "Update usuarios ", description = "Return Update usuarios ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -107,8 +92,7 @@ public class CursoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> updateCurso(@PathVariable(value = "id") Integer id, @RequestBody @Valid Curso entity) {
+    public ResponseEntity<?> updateUsuario(@PathVariable(value = "id") Integer id, @RequestBody @Valid Usuario entity) {
         if (!Objects.equals(entity.getId(), id)) {
             return badRequest().body("Ops! Id of entity is not equals as param 'id'! :(");
         } else {
@@ -116,8 +100,8 @@ public class CursoController {
             return noContent().build();
         }
     }
-
-    @Operation(summary = "Delete cursos", description = "Return Delete cursos by id (Long)")
+    
+    @Operation(summary = "Update usuario password", description = "Return Update usuarios password")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -126,10 +110,12 @@ public class CursoController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
-        service.delete(service.findById(id));
-        return noContent().build();
+    @PatchMapping
+    public ResponseEntity<?> changePassword(
+          @RequestBody ChangePasswordRequest request,
+          Principal connectedUser
+    ) {
+        service.changePassword(request, connectedUser);
+        return ResponseEntity.ok().build();
     }
 }
