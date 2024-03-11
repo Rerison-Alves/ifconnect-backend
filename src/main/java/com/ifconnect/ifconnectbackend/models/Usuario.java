@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -58,14 +59,14 @@ public class Usuario implements UserDetails {
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_grupo"))
     @JsonIgnore
-    private List<Grupo> grupos;
+    private Set<Grupo> grupos;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "usuario_turma",
             joinColumns = @JoinColumn(name = "id_usuario"),
             inverseJoinColumns = @JoinColumn(name = "id_turma"))
-    @JsonIgnore
-    private List<Turma> turmas;
+    @ToString.Exclude
+    private Set<Turma> turmas;
 
     @Enumerated(EnumType.STRING)
     @JsonIgnore

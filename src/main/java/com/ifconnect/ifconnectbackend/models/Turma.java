@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
-import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -25,5 +25,5 @@ public class Turma extends Agrupamento{
     private Turno turno;
 
     @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
-    private List<Usuario> usuarios;
+    private Set<Usuario> usuarios;
 }
