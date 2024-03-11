@@ -14,8 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -124,10 +123,12 @@ public class GrupoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping("{id}")
-    public ResponseEntity<?> updateGrupo(@PathVariable(value = "id") Integer id, @RequestBody @Valid Grupo entity) {
+    public ResponseEntity<?> updateGrupo(Authentication authentication,
+                                         @PathVariable(value = "id") Integer id,
+                                         @RequestBody @Valid Grupo entity) {
         if (!Objects.equals(entity.getId(), id)) {
             return badRequest().body("Ops! Id of entity is not equals as param 'id'! :(");
-        } else if (!validaUsuarioAdmin(SecurityContextHolder.getContext(), id)) {
+        } else if (!validaUsuarioAdmin(authentication, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("Ops! You do not have permission to update this group!");
         } else {
@@ -146,8 +147,8 @@ public class GrupoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("{id}")
-    public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
-        if (!validaUsuarioAdmin(SecurityContextHolder.getContext(), id)) {
+    public ResponseEntity<?> delete(Authentication authentication, @PathVariable("id") Integer id) {
+        if (!validaUsuarioAdmin(authentication, id)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN)
                     .body("Ops! You do not have permission to delete this group!");
         } else {
@@ -156,16 +157,16 @@ public class GrupoController {
         }
     }
 
-    boolean validaUsuarioAdmin(SecurityContext securityContext, Integer idGrupo) {
+    boolean validaUsuarioAdmin(Authentication authentication, Integer idGrupo) {
         // Recupera o usuario
-        Usuario usuario = (Usuario) securityContext.getAuthentication().getPrincipal();
+        Integer usuarioId = ((Usuario)authentication.getPrincipal()).getId();
         // Recupera o grupo existente do banco de dados
         Grupo existingGroup = service.findById(idGrupo);
         // Verifica se o grupo existe
         if (existingGroup == null) {
             return false;
         }
-        return existingGroup.getAdmin().getId().equals(usuario.getId());
+        return existingGroup.getAdmin().getId().equals(usuarioId);
     }
 }
 

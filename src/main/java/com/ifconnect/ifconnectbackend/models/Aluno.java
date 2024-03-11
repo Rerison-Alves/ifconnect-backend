@@ -8,7 +8,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Embeddable
-public class Aluno extends Usuario {
+public class Aluno {
 
     @ManyToOne
     @JoinColumn(name = "id_curso", referencedColumnName = "id")
