@@ -2,6 +2,7 @@ package com.ifconnect.ifconnectbackend.models;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +19,7 @@ public abstract class Agrupamento {
     private Integer id;
 
     @ManyToOne
-    @NotBlank(message = "${notblank}")
+    @NotNull(message = "${notblank}")
     @JoinColumn(name = "id_user", nullable = false)
     private Usuario admin;
 
@@ -29,7 +30,6 @@ public abstract class Agrupamento {
 
     private String descricao;
 
-    @NotBlank(message = "${notblank}")
     @ManyToOne
     @JoinColumn(name = "id_curso", referencedColumnName = "id")
     private Curso curso;

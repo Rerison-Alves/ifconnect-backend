@@ -2,6 +2,7 @@ package com.ifconnect.ifconnectbackend.grupo;
 
 import com.ifconnect.ifconnectbackend.models.Grupo;
 import com.ifconnect.ifconnectbackend.models.modelvo.SearchFilter;
+import com.ifconnect.ifconnectbackend.usuario.UsuarioRepository;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,9 @@ public class GrupoService {
 
     @Autowired
     private final GrupoRepository repository;
+
+    @Autowired
+    private final UsuarioRepository usuarioRepository;
 
     @Transactional
     public Grupo saveOrUpdate(Grupo entity) {

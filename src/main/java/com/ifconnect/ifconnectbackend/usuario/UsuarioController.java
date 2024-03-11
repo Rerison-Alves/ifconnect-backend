@@ -9,11 +9,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
@@ -30,6 +33,21 @@ import static org.springframework.http.ResponseEntity.*;
 public class UsuarioController {
 
     private final UsuarioService service;
+
+    @Operation(summary = "Usuarios by id.", description = "Return the usuarios by id.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.OK)
+    @GetMapping("/usuario-logado")
+    @Transactional
+    public ResponseEntity<Usuario> getLogado(Authentication authentication) {
+        return ok().body(service.findById(((Usuario)authentication.getPrincipal()).getId()));
+    }
 
     @Operation(summary = "Usuarios by id.", description = "Return the usuarios by id.")
     @ApiResponses(value = {

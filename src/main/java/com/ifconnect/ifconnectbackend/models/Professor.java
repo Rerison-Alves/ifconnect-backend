@@ -9,7 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 
 @Embeddable
-public class Professor extends Usuario {
+public class Professor {
 
     @Getter
     @Column(unique = true)
