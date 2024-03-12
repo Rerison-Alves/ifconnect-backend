@@ -13,3 +13,14 @@ $ ./ngrok http http://localhost:8080
 -> http://localhost:8080/swagger-ui/index.html#/
 
 -> The application will be available at http://localhost:8080.
+
+# Railway properties
+
+```properties
+spring_profiles_active=prod
+PROD_DB_HOST=HOST_HERE
+PROD_DB_PORT=POST_HERE
+PROD_DB_NAME=railway
+PROD_DB_PASSWORD=PASSWORD_HERE
+PROD_DB_USERNAME=postgres
+```
