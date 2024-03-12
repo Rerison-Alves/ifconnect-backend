@@ -1,11 +1,14 @@
 package com.ifconnect.ifconnectbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.apache.commons.lang3.builder.ToStringExclude;
 
 import java.util.List;
+import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,6 +24,8 @@ public class Grupo extends Agrupamento{
     private String areadeEstudo;
 
     @ManyToMany(mappedBy = "grupos", fetch = FetchType.LAZY)
-    private List<Usuario> usuarios;
+    @JsonIgnore
+    @ToString.Exclude
+    private Set<Usuario> usuarios;
 
 }
