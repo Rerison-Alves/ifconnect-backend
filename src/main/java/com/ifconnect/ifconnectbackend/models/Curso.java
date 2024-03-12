@@ -29,7 +29,7 @@ public class Curso {
     @Size(max = 255, message = "${maxsize}")
     private String observacao;
 
-    @NotBlank(message = "${notblank}")
+    @NotNull(message = "${notblank}")
     private Boolean status;
 
     @NotNull(message = "${notblank}")
