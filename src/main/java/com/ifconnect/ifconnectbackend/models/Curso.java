@@ -3,6 +3,7 @@ package com.ifconnect.ifconnectbackend.models;
 import com.ifconnect.ifconnectbackend.models.enums.Turno;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
