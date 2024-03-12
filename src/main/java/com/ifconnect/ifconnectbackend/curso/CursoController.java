@@ -41,7 +41,7 @@ public class CursoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<Curso> save(@RequestBody @Valid Curso entity) {
         return created(fromCurrentRequestUri().path(service.saveOrUpdate(entity).getId().toString()).build().toUri()).body(entity);
     }
@@ -107,7 +107,7 @@ public class CursoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<?> updateCurso(@PathVariable(value = "id") Integer id, @RequestBody @Valid Curso entity) {
         if (!Objects.equals(entity.getId(), id)) {
             return badRequest().body("Ops! Id of entity is not equals as param 'id'! :(");
@@ -127,7 +127,7 @@ public class CursoController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ROLE_MANAGER')")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
         service.delete(service.findById(id));
         return noContent().build();
