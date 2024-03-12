@@ -31,7 +31,7 @@ public class Curso {
     @NotBlank(message = "${notblank}")
     private Boolean status;
 
-    @NotBlank(message = "${notblank}")
+    @NotNull(message = "${notblank}")
     @Enumerated(EnumType.STRING)
     private Turno turno;
 
