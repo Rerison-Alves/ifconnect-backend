@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Data
 @Builder
@@ -20,7 +21,8 @@ public class Local {
     private Integer id;
 
     @Column(unique = true)
-    @NotBlank(message = "${notblank}")
+    @UniqueElements(message = "Nome ${unique}")
+    @NotBlank(message = "Nome ${notblank}")
     private String nome;
 
     @NotBlank(message = "${notblank}")

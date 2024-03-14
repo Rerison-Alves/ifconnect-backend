@@ -19,7 +19,7 @@ import java.util.Set;
 @Table(name = "grupos")
 public class Grupo extends Agrupamento{
 
-    @NotBlank(message = "${notblank}")
+    @NotBlank(message = "Área de estudo ${notblank}")
     @Size(min = 3, max = 100, message = "${size}")
     private String areadeEstudo;
 

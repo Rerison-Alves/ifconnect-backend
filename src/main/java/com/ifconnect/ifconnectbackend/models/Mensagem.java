@@ -3,6 +3,7 @@ package com.ifconnect.ifconnectbackend.models;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,12 +24,12 @@ public class Mensagem {
     private Integer id;
 
     @ManyToOne
-    @NotBlank(message = "${notblank}")
+    @NotNull(message = "Encontro ${notblank}")
     @JoinColumn(name = "id_encontro", nullable = false)
     private Encontro encontro;
 
     @ManyToOne
-    @NotBlank(message = "${notblank}")
+    @NotNull(message = "Usuario ${notblank}")
     @JoinColumn(name = "id_user", nullable = false)
     private Usuario usuario;
 

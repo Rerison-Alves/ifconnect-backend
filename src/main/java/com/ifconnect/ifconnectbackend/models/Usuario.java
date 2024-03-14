@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -30,22 +31,24 @@ public class Usuario implements UserDetails {
     private Integer id;
 
     @Column(unique = true)
-    @NotBlank(message = "${notblank}")
-    @Size(min = 3, max = 100, message = "${size}")
+    @NotBlank(message = "Nome ${notblank}")
+    @Size(min = 3, max = 100, message = "Nome ${size}")
     private String nome;
 
     @JsonIgnore
-    @NotBlank(message = "${notblank}")
+    @NotBlank(message = "Senha ${notblank}")
+    @Size(min = 8, max = 255, message = "Senha ${size}")
     private String password;
 
     @Column(unique = true)
-    @NotBlank(message = "${notblank}")
+    @UniqueElements(message = "Email ${unique}")
+    @NotBlank(message = "Email ${notblank}")
     private String email;
 
     private String fotoPerfilBase64;
 
     @JsonFormat(pattern="dd/MM/yyyy")
-    @NotNull(message = "${notblank}")
+    @NotNull(message = "Data de nascimento ${notblank}")
     private Date dataNasc;
 
     @Embedded
@@ -70,6 +73,7 @@ public class Usuario implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     @JsonIgnore
+    @NotNull(message = "Permissão ${notblank}")
     private Role role;
 
     @OneToMany(mappedBy = "usuario")

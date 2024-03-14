@@ -3,6 +3,7 @@ package com.ifconnect.ifconnectbackend.models;
 import com.ifconnect.ifconnectbackend.models.enums.Turno;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
@@ -21,7 +22,7 @@ public class Turma extends Agrupamento{
     @Size(min = 3, max = 100, message = "${size}")
     private String disciplina;
 
-    @NotBlank(message = "${notblank}")
+    @NotNull(message = "Turno ${notblank}")
     private Turno turno;
 
     @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)

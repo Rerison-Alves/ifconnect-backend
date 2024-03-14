@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.UniqueElements;
 
 @Data
 @Builder
@@ -22,17 +23,19 @@ public class Curso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "${notblank}")
+    @NotBlank(message = "Descrição ${notblank}")
+    @Column(unique = true)
+    @UniqueElements(message = "Descrição ${unique}")
     @Size(min = 3, max = 100, message = "${size}")
     private String descricao;
 
-    @Size(max = 255, message = "${maxsize}")
+    @Size(max = 255, message = "Observação ${maxsize}")
     private String observacao;
 
-    @NotBlank(message = "${notblank}")
+    @NotBlank(message = "Status ${notblank}")
     private Boolean status;
 
-    @NotNull(message = "${notblank}")
+    @NotNull(message = "Turno ${notblank}")
     @Enumerated(EnumType.STRING)
     private Turno turno;
 

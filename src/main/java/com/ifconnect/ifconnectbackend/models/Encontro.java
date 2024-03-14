@@ -19,11 +19,12 @@ public class Encontro {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank(message = "${notblank}")
+    @NotBlank(message = "Tema ${notblank}")
     @Size(min = 3, max = 100, message = "${size}")
     private String tema;
 
-    @NotBlank(message = "${notblank}")
+    @NotBlank(message = "Descrição ${notblank}")
+    @Size(max = 255, message = "Descrição ${maxsize}")
     private String descricao;
 
     @ManyToOne
