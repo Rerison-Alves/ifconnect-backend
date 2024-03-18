@@ -24,6 +24,8 @@ public class JwtService {
   private long jwtExpiration;
   @Value("${application.security.jwt.refresh-token.expiration}")
   private long refreshExpiration;
+  @Value("${application.security.jwt.confirm-token.expiration}")
+  private long confirmExpiration;
 
   public String extractUsername(String token) {
     return extractClaim(token, Claims::getSubject);
@@ -43,6 +45,12 @@ public class JwtService {
       UserDetails userDetails
   ) {
     return buildToken(extraClaims, userDetails, jwtExpiration);
+  }
+
+  public String generateConfirmToken(
+      UserDetails userDetails
+  ) {
+    return buildToken(new HashMap<>(), userDetails, confirmExpiration);
   }
 
   public String generateRefreshToken(

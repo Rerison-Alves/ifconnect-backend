@@ -3,21 +3,20 @@ package com.ifconnect.ifconnectbackend.auth;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationRequest;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationResponse;
 import com.ifconnect.ifconnectbackend.requestmodels.RegisterRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
+@Tag(name = "Autenticação")
 public class AuthenticationController {
 
   private final AuthenticationService service;
@@ -33,6 +32,11 @@ public class AuthenticationController {
       return ResponseEntity.status(responseEntity.getStatusCode())
               .body(responseEntity.getBody());
     }
+  }
+
+  @GetMapping("/register/confirm")
+  public String confirm(@RequestParam("token") String token) {
+    return service.confirmToken(token);
   }
 
   @PostMapping("/authenticate")

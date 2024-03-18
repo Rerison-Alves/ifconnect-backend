@@ -2,6 +2,8 @@ package com.ifconnect.ifconnectbackend.auth;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifconnect.ifconnectbackend.config.JwtService;
+import com.ifconnect.ifconnectbackend.email.EmailSender;
+import com.ifconnect.ifconnectbackend.email.EmailValidator;
 import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
 import com.ifconnect.ifconnectbackend.models.Usuario;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationRequest;
@@ -13,36 +15,44 @@ import com.ifconnect.ifconnectbackend.token.TokenType;
 import com.ifconnect.ifconnectbackend.usuario.UsuarioRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Date;
-
-import static com.ifconnect.ifconnectbackend.auth.AutheticationValidator.handleDuplicateError;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
   private final UsuarioRepository repository;
+  private final EmailValidator emailValidator;
+  private final EmailSender emailSender;
   private final TokenRepository tokenRepository;
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
+  @Value("${application.host}/api/v1/auth/register/confirm?token=")
+  private String linkConfirm;
 
   public ResponseEntity<?> register(RegisterRequest request) {
     var user = Usuario.builder()
             .nome(request.getNome())
-            .password(passwordEncoder.encode(request.getPassword()!=null?request.getPassword():""))
+            .password(passwordEncoder.encode(request.getPassword()!=null?request.getPassword():null))
             .fotoPerfilBase64(request.getFotoPerfilBase64())
+            .enabled(false)
             .email(request.getEmail())
             .dataNasc(request.getDataNasc())
             .aluno(request.getAluno())
@@ -50,17 +60,52 @@ public class AuthenticationService {
             .role(request.getRole())
             .build();
     try {
+      if (!emailValidator.test(user.getEmail())) {
+        throw new IllegalStateException("Email não é válido");
+      }
       var savedUser = repository.save(user);
-      var jwtToken = jwtService.generateToken(user);
-      var refreshToken = jwtService.generateRefreshToken(user);
+      var jwtToken = jwtService.generateConfirmToken(user);
       saveUserToken(savedUser, jwtToken);
-      return ResponseEntity.ok(AuthenticationResponse.builder()
-              .accessToken(jwtToken)
-              .refreshToken(refreshToken)
-              .build());
-    } catch (DataIntegrityViolationException e){
-      return handleDuplicateError(e.getMessage(), user);
+
+      SendConfirmationEmail(request.getEmail(), request.getNome(), jwtToken);
+
+      return ResponseEntity.ok().build();
+    } catch (Exception e){
+      return ResponseEntity.badRequest().body(new ErrorDetails(
+              new Date(),
+              e.getMessage(),
+              HttpStatus.BAD_REQUEST.name()));
     }
+  }
+
+  @Transactional
+  public String confirmToken(String token) {
+    try {
+      Token confirmationToken = getToken(tokenRepository.findByToken(token));
+      tokenRepository.updateConfirmedAt(token, LocalDateTime.now());
+      repository.enableUsuario(confirmationToken.getUsuario().getEmail());
+      return emailSender.confirmedPage();
+    } catch (IllegalStateException e){
+      return emailSender.erroConfirmPage(e.getMessage());
+    }
+  }
+
+  private static Token getToken(Optional<Token> opConfirmationToken) {
+    Token confirmationToken;
+    if(opConfirmationToken.isPresent()){
+      confirmationToken = opConfirmationToken.get();
+    }else {
+      throw new IllegalStateException("Opa, esse usuário não foi encontrado, houve algum erro!");
+    }
+
+    if (confirmationToken.getConfirmedAt() != null) {
+      throw new IllegalStateException("Email já confirmado. Sua conta já está ativa.");
+    }
+
+    if (confirmationToken.isExpired()) {
+      throw new AccountExpiredException("Link expirado, faça login novamente no aplicativo para um reenvio.");
+    }
+    return confirmationToken;
   }
 
   public ResponseEntity<?> authenticate(AuthenticationRequest request) {
@@ -72,15 +117,28 @@ public class AuthenticationService {
               )
       );
       var user = repository.findByEmail(request.getEmail()).orElseThrow();
+
       var jwtToken = jwtService.generateToken(user);
       var refreshToken = jwtService.generateRefreshToken(user);
       revokeAllUserTokens(user);
       saveUserToken(user, jwtToken);
+
       return ResponseEntity.ok(AuthenticationResponse.builder()
               .accessToken(jwtToken)
               .refreshToken(refreshToken)
               .build());
-    } catch (AuthenticationException e) {
+
+    } catch (DisabledException e) {
+      var user = repository.findByEmail(request.getEmail()).orElseThrow();
+      var jwtToken = jwtService.generateConfirmToken(user);
+      SendConfirmationEmail(request.getEmail(), user.getNome(), jwtToken);
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+              .body(new ErrorDetails(
+                      new Date(),
+                      "É necessário ativar a conta, verifique seu email!.",
+                      HttpStatus.UNAUTHORIZED.name()));
+
+    }catch (AuthenticationException e) {
       // Se ocorrer uma exceção de autenticação, isso significa que as credenciais estão inválidas
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
               .body(new ErrorDetails(
@@ -99,6 +157,13 @@ public class AuthenticationService {
         .revoked(false)
         .build();
     tokenRepository.save(token);
+  }
+
+  private void SendConfirmationEmail(String email, String nome, String jwtToken) {
+    String link =  linkConfirm + jwtToken;
+    emailSender.send(
+            email,
+            emailSender.confirmEmail(nome, link));
   }
 
   private void revokeAllUserTokens(Usuario user) {

@@ -9,7 +9,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -41,7 +40,6 @@ public class Usuario implements UserDetails {
     private String password;
 
     @Column(unique = true)
-    @UniqueElements(message = "Email ${unique}")
     @NotBlank(message = "Email ${notblank}")
     private String email;
 
@@ -75,6 +73,9 @@ public class Usuario implements UserDetails {
     @JsonIgnore
     @NotNull(message = "Permissão ${notblank}")
     private Role role;
+
+    @JsonIgnore
+    private Boolean enabled;
 
     @OneToMany(mappedBy = "usuario")
     @JsonIgnore
@@ -112,6 +113,6 @@ public class Usuario implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return enabled;
     }
 }

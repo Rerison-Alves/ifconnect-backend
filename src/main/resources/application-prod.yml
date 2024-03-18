@@ -13,13 +13,31 @@ spring:
         format_sql: true
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
-  messages:
-    basename: src.main.resources.messages
+  mail:
+    host: ${PROD_EMAIL_HOST}
+    port: ${PROD_EMAIL_PORT}
+    username: ${PROD_EMAIL_USER}
+    password: ${PROD_EMAIL_PASSWORD}
+
+    properties:
+      mail:
+        smtp:
+          ssl:
+            trust: "*"
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 3000
+          writetimeout: 5000
 
 application:
+  host: ${PROD_APP_HOST}
   security:
     jwt:
       secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
       expiration: 86400000 # a day
       refresh-token:
         expiration: 604800000 # 7 days
+      confirm-token:
+        expiration: 900000 # 15 minutes

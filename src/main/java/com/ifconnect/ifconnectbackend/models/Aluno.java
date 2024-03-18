@@ -7,7 +7,6 @@ import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
-import org.hibernate.validator.constraints.UniqueElements;
 
 @Embeddable
 public class Aluno {
@@ -18,7 +17,6 @@ public class Aluno {
 
     @Getter
     @Column(unique = true)
-    @UniqueElements(message = "Matrícula ${unique}")
     @NotBlank(message = "Matrícula ${notblank}")
     @Size(min = 14, max = 14, message = "Matrícula ${exactsize}")
     private String matricula;

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import java.util.List;
 
@@ -25,7 +24,6 @@ public abstract class Agrupamento {
     private Usuario admin;
 
     @Column(unique = true)
-    @UniqueElements(message = "Nome ${unique}")
     @NotBlank(message = "Nome ${notblank}")
     @Size(min = 3, max = 100, message = "${size}")
     private String nome;
