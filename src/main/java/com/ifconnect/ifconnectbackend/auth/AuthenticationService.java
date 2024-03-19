@@ -131,6 +131,7 @@ public class AuthenticationService {
     } catch (DisabledException e) {
       var user = repository.findByEmail(request.getEmail()).orElseThrow();
       var jwtToken = jwtService.generateConfirmToken(user);
+      saveUserToken(user, jwtToken);
       SendConfirmationEmail(request.getEmail(), user.getNome(), jwtToken);
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
               .body(new ErrorDetails(
