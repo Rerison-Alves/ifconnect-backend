@@ -178,31 +178,46 @@ public class AuthenticationService {
     tokenRepository.saveAll(validUserTokens);
   }
 
-  public void refreshToken(
-          HttpServletRequest request,
-          HttpServletResponse response
-  ) throws IOException {
-    final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-    final String refreshToken;
-    final String userEmail;
-    if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
-      return;
-    }
-    refreshToken = authHeader.substring(7);
-    userEmail = jwtService.extractUsername(refreshToken);
-    if (userEmail != null) {
-      var user = this.repository.findByEmail(userEmail)
-              .orElseThrow();
-      if (jwtService.isTokenValid(refreshToken, user)) {
-        var accessToken = jwtService.generateToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, accessToken);
-        var authResponse = AuthenticationResponse.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-        new ObjectMapper().writeValue(response.getOutputStream(), authResponse);
+  public ResponseEntity<?> refreshToken(HttpServletRequest request){
+    try {
+      //Recupera token e usuário
+      final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+      final String refreshToken;
+      final String userEmail;
+
+      if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+        throw new IllegalStateException("Sua sessão é inválida!");
       }
+      refreshToken = authHeader.substring(7);
+      userEmail = jwtService.extractUsername(refreshToken);
+
+      //Valida usuário e token
+      if (userEmail != null) {
+        var user = this.repository.findByEmail(userEmail).orElseThrow();
+        if (jwtService.isTokenValid(refreshToken, user)) {
+          //Gera novo token
+          var accessToken = jwtService.generateToken(user);
+          revokeAllUserTokens(user);
+          saveUserToken(user, accessToken);
+          var authResponse = AuthenticationResponse.builder()
+                  .accessToken(accessToken)
+                  .refreshToken(refreshToken)
+                  .build();
+          //Retorna novo token
+          return ResponseEntity.ok(authResponse);
+        }else {
+          throw new IllegalStateException("Sua sessão é inválida!");
+        }
+      }else {
+        throw new IllegalStateException("Usuário não encontrado!");
+      }
+    }catch (IllegalStateException e){
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+              new ErrorDetails(
+                      new Date(),
+                      e.getMessage(),
+                      HttpStatus.UNAUTHORIZED.name())
+      );
     }
   }
 }

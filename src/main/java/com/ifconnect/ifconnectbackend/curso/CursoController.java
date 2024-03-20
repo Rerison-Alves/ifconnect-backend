@@ -33,7 +33,7 @@ public class CursoController {
 
     private final CursoService service;
 
-    @Operation(summary = " Save cursos", description = "Return save cursos")
+    @Operation(summary = "Save cursos", description = "Return save cursos")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),

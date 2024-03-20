@@ -1,8 +1,14 @@
 package com.ifconnect.ifconnectbackend.auth;
 
+import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationRequest;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationResponse;
 import com.ifconnect.ifconnectbackend.requestmodels.RegisterRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,17 +27,17 @@ public class AuthenticationController {
 
   private final AuthenticationService service;
 
+  @Operation(summary = "Register users", description = "Register users")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Request Ok"),
+          @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+          @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+          @ApiResponse(responseCode = "404", description = "Resource not found"),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+                  content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-    ResponseEntity<?> responseEntity = service.register(request);
-    if (responseEntity.getStatusCode() == HttpStatus.OK) {
-      // Se o registro for bem-sucedido, retornar a resposta OK diretamente
-      return ResponseEntity.ok(responseEntity.getBody());
-    } else {
-      // Se houver um erro durante o registro, retornar a resposta de erro com a mensagem apropriada
-      return ResponseEntity.status(responseEntity.getStatusCode())
-              .body(responseEntity.getBody());
-    }
+    return service.register(request);
   }
 
   @GetMapping("/register/confirm")
@@ -39,25 +45,30 @@ public class AuthenticationController {
     return service.confirmToken(token);
   }
 
+  @Operation(summary = "Authenticate users", description = "Return auth of user")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Request Ok"),
+          @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+          @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+          @ApiResponse(responseCode = "404", description = "Resource not found"),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+                  content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
   @PostMapping("/authenticate")
   public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
-    ResponseEntity<?> responseEntity = service.authenticate(request);
-    if (responseEntity.getStatusCode().is2xxSuccessful()) {
-      // Se a autenticação for bem-sucedida, retornar a resposta OK diretamente
-      return ResponseEntity.ok(responseEntity.getBody());
-    } else {
-      // Se houver um erro durante a autenticação, retornar a resposta de erro com a mensagem apropriada
-      return ResponseEntity.status(responseEntity.getStatusCode())
-              .body(responseEntity.getBody());
-    }
+    return service.authenticate(request);
   }
 
-  @PostMapping("/refresh-token")
-  public void refreshToken(
-      HttpServletRequest request,
-      HttpServletResponse response
-  ) throws IOException {
-    service.refreshToken(request, response);
+  @Operation(summary = "Refresh auth users", description = "Return refreshed-auth of user")
+  @ApiResponses(value = {
+          @ApiResponse(responseCode = "200", description = "Request Ok"),
+          @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+          @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+          @ApiResponse(responseCode = "404", description = "Resource not found"),
+          @ApiResponse(responseCode = "500", description = "Internal server error",
+                  content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+  @GetMapping("/refresh-token")
+  public ResponseEntity<?> refreshToken(HttpServletRequest request){
+    return service.refreshToken(request);
   }
 
 
