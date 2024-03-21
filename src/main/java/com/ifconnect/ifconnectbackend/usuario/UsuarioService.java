@@ -1,5 +1,7 @@
 package com.ifconnect.ifconnectbackend.usuario;
 
+import com.ifconnect.ifconnectbackend.mailcode.Code;
+import com.ifconnect.ifconnectbackend.mailcode.CodeService;
 import com.ifconnect.ifconnectbackend.models.Usuario;
 import com.ifconnect.ifconnectbackend.models.modelvo.SearchFilter;
 import com.ifconnect.ifconnectbackend.requestmodels.ChangePasswordRequest;
@@ -22,6 +24,7 @@ public class UsuarioService {
 
     private final PasswordEncoder passwordEncoder;
     private final UsuarioRepository repository;
+    private final CodeService codeService;
 
     @Transactional
     public Usuario saveOrUpdate(Usuario entity) {
@@ -48,23 +51,33 @@ public class UsuarioService {
         repository.delete(entity);
     }
     
-    public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
+    public void changePassword(ChangePasswordRequest request) {
+        Usuario user = repository.findByEmail(request.getUserEmail()).orElseThrow(() -> {
+            throw new NoResultException("Ops! Esse usuário foi encontrado! :(");
+        });
 
-        var user = (Usuario) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
+        Code code = codeService.find(request.getCode(), user);
 
-        // check if the current password is correct
-        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new IllegalStateException("Wrong password");
+        if(code.isExpired()){
+            throw new IllegalStateException("Ops! Esse código já expirou");
         }
         // check if the two new passwords are the same
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
-            throw new IllegalStateException("Password are not the same");
+            throw new IllegalStateException("Senhas não são iguais");
         }
-
         // update the password
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
-
         // save the new password
         repository.save(user);
+
+        code.setExpired(true);
+        codeService.save(code);
+    }
+
+    public void changePasswordCode(String email){
+        Usuario user = repository.findByEmail(email).orElseThrow(() -> {
+            throw new NoResultException("Ops! Esse usuário foi encontrado! :(");
+        });
+        codeService.generateAndSendCode(user);
     }
 }

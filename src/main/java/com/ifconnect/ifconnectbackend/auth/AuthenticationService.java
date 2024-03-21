@@ -1,6 +1,5 @@
 package com.ifconnect.ifconnectbackend.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ifconnect.ifconnectbackend.config.JwtService;
 import com.ifconnect.ifconnectbackend.email.EmailSender;
 import com.ifconnect.ifconnectbackend.email.EmailValidator;
@@ -14,7 +13,6 @@ import com.ifconnect.ifconnectbackend.token.TokenRepository;
 import com.ifconnect.ifconnectbackend.token.TokenType;
 import com.ifconnect.ifconnectbackend.usuario.UsuarioRepository;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +27,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Optional;
@@ -47,7 +44,7 @@ public class AuthenticationService {
   @Value("${application.host}/api/v1/auth/register/confirm?token=")
   private String linkConfirm;
 
-  public ResponseEntity<?> register(RegisterRequest request) {
+  public void register(RegisterRequest request) {
     var user = Usuario.builder()
             .nome(request.getNome())
             .password(passwordEncoder.encode(request.getPassword()!=null?request.getPassword():null))
@@ -59,23 +56,14 @@ public class AuthenticationService {
             .professor(request.getProfessor())
             .role(request.getRole())
             .build();
-    try {
-      if (!emailValidator.test(user.getEmail())) {
-        throw new IllegalStateException("Email não é válido");
-      }
-      var savedUser = repository.save(user);
-      var jwtToken = jwtService.generateConfirmToken(user);
-      saveUserToken(savedUser, jwtToken);
-
-      SendConfirmationEmail(request.getEmail(), request.getNome(), jwtToken);
-
-      return ResponseEntity.ok().build();
-    } catch (Exception e){
-      return ResponseEntity.badRequest().body(new ErrorDetails(
-              new Date(),
-              e.getMessage(),
-              HttpStatus.BAD_REQUEST.name()));
+    if (!emailValidator.test(user.getEmail())) {
+      throw new IllegalStateException("Email não é válido");
     }
+    var savedUser = repository.save(user);
+    var jwtToken = jwtService.generateConfirmToken(user);
+    saveUserToken(savedUser, jwtToken);
+
+    SendConfirmationEmail(request.getEmail(), request.getNome(), jwtToken);
   }
 
   @Transactional
@@ -108,7 +96,7 @@ public class AuthenticationService {
     return confirmationToken;
   }
 
-  public ResponseEntity<?> authenticate(AuthenticationRequest request) {
+  public AuthenticationResponse authenticate(AuthenticationRequest request) {
     try {
       authenticationManager.authenticate(
               new UsernamePasswordAuthenticationToken(
@@ -123,29 +111,19 @@ public class AuthenticationService {
       revokeAllUserTokens(user);
       saveUserToken(user, jwtToken);
 
-      return ResponseEntity.ok(AuthenticationResponse.builder()
+      return AuthenticationResponse.builder()
               .accessToken(jwtToken)
               .refreshToken(refreshToken)
-              .build());
+              .build();
 
     } catch (DisabledException e) {
       var user = repository.findByEmail(request.getEmail()).orElseThrow();
       var jwtToken = jwtService.generateConfirmToken(user);
       saveUserToken(user, jwtToken);
       SendConfirmationEmail(request.getEmail(), user.getNome(), jwtToken);
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-              .body(new ErrorDetails(
-                      new Date(),
-                      "É necessário ativar a conta, verifique seu email!.",
-                      HttpStatus.UNAUTHORIZED.name()));
-
+      throw new IllegalStateException("É necessário ativar a conta, verifique seu email!.");
     }catch (AuthenticationException e) {
-      // Se ocorrer uma exceção de autenticação, isso significa que as credenciais estão inválidas
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-              .body(new ErrorDetails(
-                      new Date(),
-                      "Credenciais inválidas. Verifique seu email e senha.",
-                      HttpStatus.UNAUTHORIZED.name()));
+      throw new IllegalStateException("Credenciais inválidas. Verifique seu email e senha.");
     }
   }
 
@@ -164,7 +142,8 @@ public class AuthenticationService {
     String link =  linkConfirm + jwtToken;
     emailSender.send(
             email,
-            emailSender.confirmEmail(nome, link));
+            emailSender.confirmEmail(nome, link),
+            "Confirme seu email");
   }
 
   private void revokeAllUserTokens(Usuario user) {
@@ -178,46 +157,36 @@ public class AuthenticationService {
     tokenRepository.saveAll(validUserTokens);
   }
 
-  public ResponseEntity<?> refreshToken(HttpServletRequest request){
-    try {
-      //Recupera token e usuário
-      final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
-      final String refreshToken;
-      final String userEmail;
+  public AuthenticationResponse refreshToken(HttpServletRequest request){
+    //Recupera token e usuário
+    final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    final String refreshToken;
+    final String userEmail;
 
-      if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+    if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
+      throw new IllegalStateException("Sua sessão é inválida!");
+    }
+    refreshToken = authHeader.substring(7);
+    userEmail = jwtService.extractUsername(refreshToken);
+
+    //Valida usuário e token
+    if (userEmail != null) {
+      var user = this.repository.findByEmail(userEmail).orElseThrow();
+      if (jwtService.isTokenValid(refreshToken, user)) {
+        //Gera novo token
+        var accessToken = jwtService.generateToken(user);
+        revokeAllUserTokens(user);
+        saveUserToken(user, accessToken);
+          //Retorna novo token
+        return AuthenticationResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+      }else {
         throw new IllegalStateException("Sua sessão é inválida!");
       }
-      refreshToken = authHeader.substring(7);
-      userEmail = jwtService.extractUsername(refreshToken);
-
-      //Valida usuário e token
-      if (userEmail != null) {
-        var user = this.repository.findByEmail(userEmail).orElseThrow();
-        if (jwtService.isTokenValid(refreshToken, user)) {
-          //Gera novo token
-          var accessToken = jwtService.generateToken(user);
-          revokeAllUserTokens(user);
-          saveUserToken(user, accessToken);
-          var authResponse = AuthenticationResponse.builder()
-                  .accessToken(accessToken)
-                  .refreshToken(refreshToken)
-                  .build();
-          //Retorna novo token
-          return ResponseEntity.ok(authResponse);
-        }else {
-          throw new IllegalStateException("Sua sessão é inválida!");
-        }
-      }else {
-        throw new IllegalStateException("Usuário não encontrado!");
-      }
-    }catch (IllegalStateException e){
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
-              new ErrorDetails(
-                      new Date(),
-                      e.getMessage(),
-                      HttpStatus.UNAUTHORIZED.name())
-      );
+    }else {
+      throw new IllegalStateException("Usuário não encontrado!");
     }
   }
 }

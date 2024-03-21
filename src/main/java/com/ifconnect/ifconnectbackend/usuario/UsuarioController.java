@@ -21,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,7 +37,7 @@ public class UsuarioController {
 
     private final UsuarioService service;
 
-    @Operation(summary = "Usuarios by id.", description = "Return the usuarios by id.")
+    @Operation(summary = "Usuario logged.", description = "Return the usuario logged.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -130,12 +131,43 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @PatchMapping
-    public ResponseEntity<?> changePassword(
-          @RequestBody ChangePasswordRequest request,
-          Principal connectedUser
-    ) {
-        service.changePassword(request, connectedUser);
-        return ResponseEntity.ok().build();
+    @PostMapping("/change-password")
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+            service.changePassword(request);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ErrorDetails(
+                            new Date(),
+                            e.getMessage(),
+                            HttpStatus.BAD_REQUEST.name())
+            );
+        }
+
+    }
+
+    @Operation(summary = "Create code to alter password", description = "Create code to alter password")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PatchMapping("/change-password-code")
+    public ResponseEntity<?> changePasswordCode(@RequestParam(value = "email") String email){
+        try {
+            service.changePasswordCode(email);
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ErrorDetails(
+                            new Date(),
+                            e.getMessage(),
+                            HttpStatus.BAD_REQUEST.name())
+            );
+        }
     }
 }

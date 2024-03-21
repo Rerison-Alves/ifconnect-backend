@@ -28,6 +28,8 @@ public class SecurityConfiguration {
             "/api/v1/auth/**",
             "/api/v1/cursos/get-all",
             "/api/v1/cursos/search",
+            "/api/v1/usuarios/change-password-code",
+            "/api/v1/usuarios/change-password",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",

@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Date;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -37,7 +38,15 @@ public class AuthenticationController {
                   content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
   @PostMapping("/register")
   public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
-    return service.register(request);
+    try {
+      service.register(request);
+      return ResponseEntity.ok().build();
+    }catch (Exception e){
+      return ResponseEntity.badRequest().body(new ErrorDetails(
+              new Date(),
+              e.getMessage(),
+              HttpStatus.BAD_REQUEST.name()));
+    }
   }
 
   @GetMapping("/register/confirm")
@@ -55,7 +64,16 @@ public class AuthenticationController {
                   content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
   @PostMapping("/authenticate")
   public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest request) {
-    return service.authenticate(request);
+    try {
+      var response = service.authenticate(request);
+      return ResponseEntity.ok(response);
+    }catch (Exception e){
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+              .body(new ErrorDetails(
+                      new Date(),
+                      e.getMessage(),
+                      HttpStatus.UNAUTHORIZED.name()));
+    }
   }
 
   @Operation(summary = "Refresh auth users", description = "Return refreshed-auth of user")
@@ -68,7 +86,17 @@ public class AuthenticationController {
                   content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
   @GetMapping("/refresh-token")
   public ResponseEntity<?> refreshToken(HttpServletRequest request){
-    return service.refreshToken(request);
+    try {
+      var response = service.refreshToken(request);
+      return ResponseEntity.ok(response);
+    }catch (Exception e){
+      return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(
+              new ErrorDetails(
+                      new Date(),
+                      e.getMessage(),
+                      HttpStatus.UNAUTHORIZED.name())
+      );
+    }
   }
 
 
