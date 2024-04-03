@@ -21,14 +21,14 @@ public class Token {
   public Integer id;
 
   @Column(unique = true)
-  public String token;
+  public String value;
 
   @Enumerated(EnumType.STRING)
   public TokenType tokenType = TokenType.BEARER;
 
-  public boolean revoked;
+  private boolean revoked;
 
-  public boolean expired;
+  private boolean expired;
 
   private LocalDateTime confirmedAt;
 

@@ -37,8 +37,9 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
-  @Value("${application.host}/api/v1/auth/register/confirm?token=")
-  private String linkConfirm;
+  private static final String API_CONFIRM_ADRESS = "/api/v1/auth/register/confirm?token=";
+  @Value("${application.host}")
+  private String host;
 
   public void register(RegisterRequest request) {
     var user = Usuario.builder()
@@ -59,7 +60,7 @@ public class AuthenticationService {
     var jwtToken = jwtService.generateConfirmToken(user);
     saveUserToken(savedUser, jwtToken);
 
-    SendConfirmationEmail(request.getEmail(), request.getNome(), jwtToken);
+    sendConfirmationEmail(request.getEmail(), request.getNome(), jwtToken);
   }
 
   @Transactional
@@ -116,7 +117,7 @@ public class AuthenticationService {
       var user = repository.findByEmail(request.getEmail()).orElseThrow();
       var jwtToken = jwtService.generateConfirmToken(user);
       saveUserToken(user, jwtToken);
-      SendConfirmationEmail(request.getEmail(), user.getNome(), jwtToken);
+      sendConfirmationEmail(request.getEmail(), user.getNome(), jwtToken);
       throw new IllegalStateException("É necessário ativar a conta, verifique seu email!.");
     }catch (AuthenticationException e) {
       throw new IllegalStateException("Credenciais inválidas. Verifique seu email e senha.");
@@ -134,8 +135,8 @@ public class AuthenticationService {
     tokenRepository.save(token);
   }
 
-  private void SendConfirmationEmail(String email, String nome, String jwtToken) {
-    String link =  linkConfirm + jwtToken;
+  private void sendConfirmationEmail(String email, String nome, String jwtToken) {
+    String link =  host + API_CONFIRM_ADRESS + jwtToken;
     emailSender.send(
             email,
             emailSender.confirmEmail(nome, link),

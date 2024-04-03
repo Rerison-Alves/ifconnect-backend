@@ -19,6 +19,7 @@ public class CodeService {
 
     private final CodeRepository codeRepository;
     private final EmailSender emailSender;
+    private final Random random = new Random();
 
     public Code find(int value, Usuario usuario){
         return codeRepository.findByValueAndUsuario(value,usuario).orElseThrow(() -> {
@@ -57,7 +58,6 @@ public class CodeService {
     }
 
     private int generateRandomCode() {
-        Random random = new Random();
         return 10000 + random.nextInt(90000); // Garante que o código tenha 5 dígitos
     }
 

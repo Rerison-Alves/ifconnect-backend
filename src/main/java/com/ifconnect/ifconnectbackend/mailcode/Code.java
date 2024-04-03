@@ -19,11 +19,11 @@ public class Code {
 
     @Id
     @GeneratedValue
-    public Integer id;
+    private Integer id;
 
-    public int value;
+    private int value;
 
-    public boolean expired;
+    private boolean expired;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_usuario")

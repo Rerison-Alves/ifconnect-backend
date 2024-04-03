@@ -22,7 +22,7 @@ public interface TokenRepository extends JpaRepository<Token, Integer> {
   @Modifying
   @Query("UPDATE Token t " +
           "SET t.confirmedAt = ?2 " +
-          "WHERE t.token = ?1")
+          "WHERE t.value = ?1")
   int updateConfirmedAt(String token, LocalDateTime confirmedAt);
 
   Optional<Token> findByToken(String token);
