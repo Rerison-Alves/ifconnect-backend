@@ -1,7 +1,10 @@
 package com.ifconnect.ifconnectbackend.models;
 
 import com.ifconnect.ifconnectbackend.models.enums.Turno;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

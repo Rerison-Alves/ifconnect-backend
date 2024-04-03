@@ -2,7 +2,6 @@ package com.ifconnect.ifconnectbackend.auth;
 
 import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationRequest;
-import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationResponse;
 import com.ifconnect.ifconnectbackend.requestmodels.RegisterRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -11,13 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.Date;
 
 @RestController

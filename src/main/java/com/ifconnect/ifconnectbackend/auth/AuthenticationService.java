@@ -3,7 +3,6 @@ package com.ifconnect.ifconnectbackend.auth;
 import com.ifconnect.ifconnectbackend.config.JwtService;
 import com.ifconnect.ifconnectbackend.email.EmailSender;
 import com.ifconnect.ifconnectbackend.email.EmailValidator;
-import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
 import com.ifconnect.ifconnectbackend.models.Usuario;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationRequest;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationResponse;
@@ -17,8 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
@@ -28,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
