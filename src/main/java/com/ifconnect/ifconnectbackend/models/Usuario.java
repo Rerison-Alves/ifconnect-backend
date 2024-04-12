@@ -55,22 +55,17 @@ public class Usuario implements UserDetails {
     @Embedded
     private Professor professor;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "usuario_grupo",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_grupo"))
+    @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
     @JsonIgnore
+    @ToString.Exclude
     private Set<Grupo> grupos;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "usuario_turma",
-            joinColumns = @JoinColumn(name = "id_usuario"),
-            inverseJoinColumns = @JoinColumn(name = "id_turma"))
+    @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
+    @JsonIgnore
     @ToString.Exclude
     private Set<Turma> turmas;
 
     @Enumerated(EnumType.STRING)
-    @JsonIgnore
     @NotNull(message = "Permissão ${notblank}")
     private Role role;
 
@@ -82,31 +77,37 @@ public class Usuario implements UserDetails {
     private List<Token> tokens;
 
     @Override
+    @JsonIgnore
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return role.getAuthorities();
     }
 
     @Override
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
     @Override
+    @JsonIgnore
     public String getUsername() {
         return email;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonExpired() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isAccountNonLocked() {
         return true;
     }
 
     @Override
+    @JsonIgnore
     public boolean isCredentialsNonExpired() {
         return true;
     }
