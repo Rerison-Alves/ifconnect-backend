@@ -61,7 +61,7 @@ public class CodeService {
         return 10000 + random.nextInt(90000); // Garante que o código tenha 5 dígitos
     }
 
-    @Scheduled(fixedDelay = 10000) // executar a cada 10 segundos
+    @Scheduled(fixedDelay = 60000) // executar a cada 60 segundos
     private void scheduleCodeExpiration() {
         List<Code> codes = codeRepository.findByExpiredFalse();
         LocalDateTime now = LocalDateTime.now();
