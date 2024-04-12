@@ -66,7 +66,7 @@ public class AuthenticationService {
   @Transactional
   public String confirmToken(String token) {
     try {
-      Token confirmationToken = getToken(tokenRepository.findByToken(token));
+      Token confirmationToken = getToken(tokenRepository.findByValue(token));
       tokenRepository.updateConfirmedAt(token, LocalDateTime.now());
       repository.enableUsuario(confirmationToken.getUsuario().getEmail());
       return emailSender.confirmedPage();
