@@ -10,7 +10,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-@SuppressWarnings("MalformedFormatString")
 @Service
 @AllArgsConstructor
 public class EmailService implements EmailSender{
@@ -43,11 +42,11 @@ public class EmailService implements EmailSender{
 
           <span style="display:none;font-size:1px;color:#fff;max-height:0"></span>
 
-          <table role="presentation" width="100%" style="border-collapse:collapse;min-width:100%;width:100%!important" cellpadding="0" cellspacing="0" border="0">
+          <table role="presentation" width="100%%" style="border-collapse:collapse;min-width:100%%;width:100%%!important" cellpadding="0" cellspacing="0" border="0">
             <tbody><tr>
-              <td width="100%" height="53" bgcolor="#0b0c0c">
+              <td width="100%%" height="53" bgcolor="#0b0c0c">
 
-                <table role="presentation" width="100%" style="border-collapse:collapse;max-width:580px" cellpadding="0" cellspacing="0" border="0" align="center">
+                <table role="presentation" width="100%%" style="border-collapse:collapse;max-width:580px" cellpadding="0" cellspacing="0" border="0" align="center">
                   <tbody><tr>
                     <td width="70" bgcolor="#0b0c0c" valign="middle">
                         <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
@@ -68,14 +67,14 @@ public class EmailService implements EmailSender{
               </td>
             </tr>
           </tbody></table>
-          <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%!important" width="100%">
+          <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%%!important" width="100%%">
             <tbody><tr>
               <td width="10" height="10" valign="middle"></td>
               <td>
 
-                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+                      <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
                         <tbody><tr>
-                          <td bgcolor="#1D70B8" width="100%" height="10"></td>
+                          <td bgcolor="#1D70B8" width="100%%" height="10"></td>
                         </tr>
                       </tbody></table>
 
@@ -83,7 +82,7 @@ public class EmailService implements EmailSender{
               <td width="10" valign="middle" height="10"></td>
             </tr>
           </tbody></table>
-          <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%!important" width="100%">
+          <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%%!important" width="100%%">
             <tbody><tr>
               <td height="30"><br></td>
             </tr>
@@ -114,13 +113,13 @@ public class EmailService implements EmailSender{
         return """
         <div style="font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c">
             <span style="display:none;font-size:1px;color:#fff;max-height:0"></span>
-
-            <table role="presentation" width="100%" style="border-collapse:collapse;min-width:100%;width:100%!important" cellpadding="0" cellspacing="0" border="0">
+    
+            <table role="presentation" width="100%%" style="border-collapse:collapse;min-width:100%%;width:100%%!important" cellpadding="0" cellspacing="0" border="0">
                 <tbody>
                     <tr>
-                        <td width="100%" height="53" bgcolor="#0b0c0c">
-
-                            <table role="presentation" width="100%" style="border-collapse:collapse;max-width:580px" cellpadding="0" cellspacing="0" border="0" align="center">
+                        <td width="100%%" height="53" bgcolor="#0b0c0c">
+    
+                            <table role="presentation" width="100%%" style="border-collapse:collapse;max-width:580px" cellpadding="0" cellspacing="0" border="0" align="center">
                                 <tbody>
                                     <tr>
                                         <td width="70" bgcolor="#0b0c0c" valign="middle">
@@ -128,7 +127,7 @@ public class EmailService implements EmailSender{
                                                 <tbody>
                                                     <tr>
                                                         <td style="padding-left:10px">
-
+    
                                                         </td>
                                                         <td style="font-size:28px;line-height:1.315789474;Margin-top:4px;padding-left:10px">
                                                             <span style="font-family:Helvetica,Arial,sans-serif;font-weight:700;color:#ffffff;text-decoration:none;vertical-align:top;display:inline-block">Alteração de senha</span>
@@ -140,35 +139,33 @@ public class EmailService implements EmailSender{
                                     </tr>
                                 </tbody>
                             </table>
-
+    
                         </td>
                     </tr>
                 </tbody>
             </table>
-
-            <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%!important" width="100%">
+    
+            <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%%!important" width="100%%">
                 <tbody>
                     <tr>
                         <td width="10" height="10" valign="middle"></td>
                         <td>
-
-                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
+    
+                            <table role="presentation" width="100%%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse">
                                 <tbody>
                                     <tr>
-                                        <td bgcolor="#1D70B8" width="100%" height="10"></td>
+                                        <td bgcolor="#1D70B8" width="100%%" height="10"></td>
                                     </tr>
                                 </tbody>
                             </table>
-
+    
                         </td>
                         <td width="10" valign="middle" height="10"></td>
                     </tr>
                 </tbody>
             </table>
-
-
-
-            <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%!important" width="100%">
+    
+            <table role="presentation" class="m_-6186904992287805515content" align="center" cellpadding="0" cellspacing="0" border="0" style="border-collapse:collapse;max-width:580px;width:100%%!important" width="100%%">
                 <tbody>
                     <tr>
                         <td height="30"><br></td>
@@ -176,14 +173,14 @@ public class EmailService implements EmailSender{
                     <tr>
                         <td width="10" valign="middle"><br></td>
                         <td style="font-family:Helvetica,Arial,sans-serif;font-size:19px;line-height:1.315789474;max-width:560px">
-
+    
                             <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">Olá %s,</p>
-                            <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">Recebos uma solicitação de alteração de senha, se não foi você desconsiderar essse email. </p>
-                            <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">Seu código de verificação é: <strong>%s</strong></p>
+                            <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">Recebemos uma solicitação de alteração de senha, se não foi você, desconsidere esse email. </p>
+                            <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">Seu código de verificação é: <strong>%d</strong></p>
                             <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">Por favor, insira este código para validar sua conta.</p>
                             <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">O código irá expirar em 15 minutos.</p>
                             <p style="Margin:0 0 20px 0;font-size:19px;line-height:25px;color:#0b0c0c">Até logo!</p>
-
+    
                         </td>
                         <td width="10" valign="middle"><br></td>
                     </tr>
@@ -309,7 +306,7 @@ public class EmailService implements EmailSender{
                 }
         
                 .container {
-                    width: 100%;
+                    width: 100%%;
                     max-width: 600px;
                     margin: 0 auto;
                     background-color: #fff;
@@ -326,7 +323,7 @@ public class EmailService implements EmailSender{
                     position: absolute;
                     top: 0;
                     left: 0;
-                    width: 100%;
+                    width: 100%%;
                 }
         
                 h1 {
