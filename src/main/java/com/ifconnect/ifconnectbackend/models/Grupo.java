@@ -1,10 +1,6 @@
 package com.ifconnect.ifconnectbackend.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
@@ -24,9 +20,11 @@ public class Grupo extends Agrupamento{
     @Size(min = 3, max = 100, message = "${size}")
     private String areadeEstudo;
 
-    @ManyToMany(mappedBy = "grupos", fetch = FetchType.LAZY)
-    @JsonIgnore
+    @ManyToMany(fetch = FetchType.LAZY)
     @ToString.Exclude
+    @JoinTable(name = "usuario_grupo",
+            joinColumns = @JoinColumn(name = "id_grupo"),
+            inverseJoinColumns = @JoinColumn(name = "id_usuario"))
     private Set<Usuario> usuarios;
 
 }

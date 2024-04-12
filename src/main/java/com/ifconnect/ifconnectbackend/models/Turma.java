@@ -1,10 +1,7 @@
 package com.ifconnect.ifconnectbackend.models;
 
 import com.ifconnect.ifconnectbackend.models.enums.Turno;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -28,6 +25,10 @@ public class Turma extends Agrupamento{
     @NotNull(message = "Turno ${notblank}")
     private Turno turno;
 
-    @ManyToMany(mappedBy = "turmas", fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JoinTable(name = "usuario_turma",
+            joinColumns = @JoinColumn(name = "id_turma"),
+            inverseJoinColumns = @JoinColumn(name = "id_usuario"))
     private Set<Usuario> usuarios;
 }
