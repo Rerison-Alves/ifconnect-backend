@@ -4,7 +4,6 @@ import com.ifconnect.ifconnectbackend.email.EmailSender;
 import com.ifconnect.ifconnectbackend.models.Usuario;
 import jakarta.persistence.NoResultException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +19,7 @@ public class CodeService {
 
     private final CodeRepository codeRepository;
     private final EmailSender emailSender;
+    private final Random random = new Random();
 
     public Code find(int value, Usuario usuario){
         return codeRepository.findByValueAndUsuario(value,usuario).orElseThrow(() -> {
@@ -59,11 +58,10 @@ public class CodeService {
     }
 
     private int generateRandomCode() {
-        Random random = new Random();
         return 10000 + random.nextInt(90000); // Garante que o código tenha 5 dígitos
     }
 
-    @Scheduled(fixedDelay = 10000) // executar a cada 10 segundos
+    @Scheduled(fixedDelay = 60000) // executar a cada 60 segundos
     private void scheduleCodeExpiration() {
         List<Code> codes = codeRepository.findByExpiredFalse();
         LocalDateTime now = LocalDateTime.now();

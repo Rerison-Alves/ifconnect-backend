@@ -3,7 +3,6 @@ package com.ifconnect.ifconnectbackend.auth;
 import com.ifconnect.ifconnectbackend.config.JwtService;
 import com.ifconnect.ifconnectbackend.email.EmailSender;
 import com.ifconnect.ifconnectbackend.email.EmailValidator;
-import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
 import com.ifconnect.ifconnectbackend.models.Usuario;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationRequest;
 import com.ifconnect.ifconnectbackend.requestmodels.AuthenticationResponse;
@@ -17,8 +16,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AccountExpiredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.DisabledException;
@@ -28,7 +25,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -41,8 +37,9 @@ public class AuthenticationService {
   private final PasswordEncoder passwordEncoder;
   private final JwtService jwtService;
   private final AuthenticationManager authenticationManager;
-  @Value("${application.host}/api/v1/auth/register/confirm?token=")
-  private String linkConfirm;
+  private static final String API_CONFIRM_ADRESS = "/api/v1/auth/register/confirm?token=";
+  @Value("${application.host}")
+  private String host;
 
   public void register(RegisterRequest request) {
     var user = Usuario.builder()
@@ -63,7 +60,7 @@ public class AuthenticationService {
     var jwtToken = jwtService.generateConfirmToken(user);
     saveUserToken(savedUser, jwtToken);
 
-    SendConfirmationEmail(request.getEmail(), request.getNome(), jwtToken);
+    sendConfirmationEmail(request.getEmail(), request.getNome(), jwtToken);
   }
 
   @Transactional
@@ -120,7 +117,7 @@ public class AuthenticationService {
       var user = repository.findByEmail(request.getEmail()).orElseThrow();
       var jwtToken = jwtService.generateConfirmToken(user);
       saveUserToken(user, jwtToken);
-      SendConfirmationEmail(request.getEmail(), user.getNome(), jwtToken);
+      sendConfirmationEmail(request.getEmail(), user.getNome(), jwtToken);
       throw new IllegalStateException("É necessário ativar a conta, verifique seu email!.");
     }catch (AuthenticationException e) {
       throw new IllegalStateException("Credenciais inválidas. Verifique seu email e senha.");
@@ -130,7 +127,7 @@ public class AuthenticationService {
   private void saveUserToken(Usuario usuario, String jwtToken) {
     var token = Token.builder()
         .usuario(usuario)
-        .token(jwtToken)
+        .value(jwtToken)
         .tokenType(TokenType.BEARER)
         .expired(false)
         .revoked(false)
@@ -138,8 +135,8 @@ public class AuthenticationService {
     tokenRepository.save(token);
   }
 
-  private void SendConfirmationEmail(String email, String nome, String jwtToken) {
-    String link =  linkConfirm + jwtToken;
+  private void sendConfirmationEmail(String email, String nome, String jwtToken) {
+    String link =  host + API_CONFIRM_ADRESS + jwtToken;
     emailSender.send(
             email,
             emailSender.confirmEmail(nome, link),

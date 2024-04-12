@@ -6,7 +6,6 @@ import com.ifconnect.ifconnectbackend.usuario.UsuarioRepository;
 import jakarta.persistence.NoResultException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -17,10 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GrupoService {
 
-    @Autowired
     private final GrupoRepository repository;
 
-    @Autowired
     private final UsuarioRepository usuarioRepository;
 
     @Transactional
@@ -29,9 +26,9 @@ public class GrupoService {
     }
 
     public Grupo findById(Integer id) {
-        return repository.findById(id).orElseThrow(() -> {
-            throw new NoResultException("Ops! Not Found entity for this id! :(");
-        });
+        return repository.findById(id).orElseThrow(() ->
+                new NoResultException("Ops! Not Found entity for this id! :(")
+        );
     }
 
     public List<Grupo> findAll() {

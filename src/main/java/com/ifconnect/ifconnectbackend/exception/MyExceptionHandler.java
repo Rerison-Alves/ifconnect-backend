@@ -10,6 +10,7 @@ import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
@@ -29,7 +30,7 @@ public class MyExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> methodArgumentNotValidExceptionnHandling(MethodArgumentNotValidException exception, WebRequest request) {
-        return new ResponseEntity<>(new ErrorDetails(new Date(), String.format("[%s] %s", exception.getBindingResult().getObjectName().toUpperCase(Locale.ROOT), exception.getBindingResult().getFieldError().getDefaultMessage()), request.getDescription(false)), BAD_REQUEST);
+        return new ResponseEntity<>(new ErrorDetails(new Date(), String.format("[%s] %s", exception.getBindingResult().getObjectName().toUpperCase(Locale.ROOT), Objects.requireNonNull(exception.getBindingResult().getFieldError()).getDefaultMessage()), request.getDescription(false)), BAD_REQUEST);
     }
 
     @ExceptionHandler(Exception.class)
