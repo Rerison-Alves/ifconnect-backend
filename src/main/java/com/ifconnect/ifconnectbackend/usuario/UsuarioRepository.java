@@ -19,7 +19,7 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
   @Modifying
   @Query("UPDATE Usuario a " +
           "SET a.enabled = TRUE WHERE a.email = ?1")
-  int enableUsuario(String email);
+  void enableUsuario(String email);
 
   @Query("FROM Usuario c " +
           "WHERE :searchTerm is null or LOWER(c.nome) like %:searchTerm% " +
