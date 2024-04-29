@@ -1,7 +1,7 @@
-package com.ifconnect.ifconnectbackend.econtro;
+package com.ifconnect.ifconnectbackend.local;
 
 import com.ifconnect.ifconnectbackend.exception.ErrorDetails;
-import com.ifconnect.ifconnectbackend.models.Encontro;
+import com.ifconnect.ifconnectbackend.models.Local;
 import com.ifconnect.ifconnectbackend.models.modelvo.SearchFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -14,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,14 +27,14 @@ import static org.springframework.http.ResponseEntity.*;
 import static org.springframework.web.servlet.support.ServletUriComponentsBuilder.fromCurrentRequestUri;
 
 @RestController
-@RequestMapping("/api/v1/encontros")
+@RequestMapping("/api/v1/locais")
 @RequiredArgsConstructor
-@Tag(name = "Encontro")
-public class EncontroController {
+@Tag(name = "Local")
+public class LocalController {
 
-    private final EncontroService service;
+    private final LocalService service;
 
-    @Operation(summary = "Save encontros", description = "Return save encontros")
+    @Operation(summary = "Save locais", description = "Return save locais")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -42,11 +44,12 @@ public class EncontroController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping
-    public ResponseEntity<Encontro> save(@RequestBody @Valid Encontro entity) {
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<Local> save(@RequestBody @Valid Local entity) {
         return created(fromCurrentRequestUri().path(service.saveOrUpdate(entity).getId().toString()).build().toUri()).body(entity);
     }
 
-    @Operation(summary = "Encontros by id.", description = "Return the encontros by id.")
+    @Operation(summary = "Locais by id.", description = "Return the locais by id.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -56,11 +59,10 @@ public class EncontroController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("{id}")
-    public ResponseEntity<Encontro> getOne(@PathVariable(value = "id") Integer id) {
+    public ResponseEntity<Local> getOne(@PathVariable(value = "id") Integer id) {
         return ok().body(service.findById(id));
     }
-
-    @Operation(summary = "List of encontros.", description = "List of encontros.")
+    @Operation(summary = "List of locais.", description = "List of locais.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -70,11 +72,11 @@ public class EncontroController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("/get-all")
-    public ResponseEntity<List<Encontro>> getAll() {
+    public ResponseEntity<List<Local>> getAll() {
         return ok().body(service.findAll());
     }
 
-    @Operation(summary = "List of encontros by grupo.", description = "List of encontros by grupo.")
+    @Operation(summary = "List of locais available by period.", description = "List of locais available.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -83,26 +85,22 @@ public class EncontroController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping("/grupo/{id}")
-    public ResponseEntity<List<Encontro>> getByGrupo(@PathVariable(value = "id") Integer idGrupo) {
-        return ok().body(service.findByGrupo(idGrupo));
+    @GetMapping("/find-available")
+    public ResponseEntity<?> findAvailableByPeriod(@RequestParam("startTime") String startTime,
+                                                   @RequestParam("endTime") String endTime) {
+        try {
+            return ok().body(service.findAvailableByPeriod(startTime, endTime));
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ErrorDetails(
+                            new Date(),
+                            e.getMessage(),
+                            HttpStatus.BAD_REQUEST.name())
+            );
+        }
     }
 
-    @Operation(summary = "List of encontros by turma.", description = "List of encontros by turma.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Request Ok"),
-            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
-            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
-            @ApiResponse(responseCode = "404", description = "Resource not found"),
-            @ApiResponse(responseCode = "500", description = "Internal server error",
-                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
-    @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping("/turma/{id}")
-    public ResponseEntity<List<Encontro>> getByTurma(@PathVariable(value = "id") Integer idTurma) {
-        return ok().body(service.findByTurma(idTurma));
-    }
-
-    @Operation(summary = "The list of encontros Pageable.", description = "Returns the list of entities.")
+    @Operation(summary = "The list of locais Pageable.", description = "Returns the list of entities.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -112,7 +110,7 @@ public class EncontroController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
     @GetMapping("search")
-    public ResponseEntity<Page<Encontro>> search(@RequestParam("searchTerm") String searchTerm,
+    public ResponseEntity<Page<Local>> search(@RequestParam("searchTerm") String searchTerm,
                                               @RequestParam(value = "order", required = false, defaultValue = "descricao") String order,
                                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                               @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
@@ -123,10 +121,10 @@ public class EncontroController {
                     throw new IllegalArgumentException("The sent sorting field is invalid. Available fields: 'id' and 'descricao.");
                 })
         );
-        return ResponseEntity.ok(service.encontroPageable(searchFilter));
+        return ResponseEntity.ok(service.localPageable(searchFilter));
     }
 
-    @Operation(summary = "Update encontros ", description = "Return Update encontros ")
+    @Operation(summary = "Update locais ", description = "Return Update locais ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -136,7 +134,8 @@ public class EncontroController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @PutMapping("{id}")
-    public ResponseEntity<?> updateEncontro(@PathVariable(value = "id") Integer id, @RequestBody @Valid Encontro entity) {
+    @PreAuthorize("hasRole('MANAGER')")
+    public ResponseEntity<?> updateLocal(@PathVariable(value = "id") Integer id, @RequestBody @Valid Local entity) {
         if (!Objects.equals(entity.getId(), id)) {
             return badRequest().body("Ops! Id of entity is not equals as param 'id'! :(");
         } else {
@@ -145,7 +144,7 @@ public class EncontroController {
         }
     }
 
-    @Operation(summary = "Delete encontros", description = "Return Delete encontros by id (Long)")
+    @Operation(summary = "Delete locais", description = "Return Delete locais by id (Long)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
             @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
@@ -155,6 +154,7 @@ public class EncontroController {
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('MANAGER')")
     public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
         service.delete(service.findById(id));
         return noContent().build();

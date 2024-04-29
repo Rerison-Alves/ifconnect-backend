@@ -1,4 +1,4 @@
-package com.ifconnect.ifconnectbackend.econtro;
+package com.ifconnect.ifconnectbackend.encontro;
 
 import com.ifconnect.ifconnectbackend.models.Encontro;
 import org.springframework.data.domain.Page;

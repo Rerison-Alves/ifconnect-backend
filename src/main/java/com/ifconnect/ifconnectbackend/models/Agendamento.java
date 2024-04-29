@@ -1,32 +1,21 @@
 package com.ifconnect.ifconnectbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.persistence.Column;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "agendamentos")
+@Getter
+@Setter
+@Embeddable
 public class Agendamento {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "encontro_id", nullable = false)
-    private Encontro encontro;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "local_id", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "id_local", referencedColumnName = "id")
     private Local local;
 
     @Column(nullable = false)
