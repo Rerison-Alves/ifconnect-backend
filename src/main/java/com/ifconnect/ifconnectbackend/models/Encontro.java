@@ -27,6 +27,9 @@ public class Encontro {
     @Size(max = 255, message = "Descrição ${maxsize}")
     private String descricao;
 
+    @Embedded
+    private Agendamento agendamento;
+
     @ManyToOne
     @JoinColumn(name = "id_grupo")
     private Grupo grupo;
