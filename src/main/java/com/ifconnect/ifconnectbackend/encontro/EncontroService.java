@@ -32,12 +32,24 @@ public class EncontroService {
         return repository.findAll();
     }
 
+    public List<Encontro> findUpcomingEncontrosByUser(Integer idUser){
+        return repository.findUpcomingEncontrosByUser_Id(idUser);
+    }
+
     public List<Encontro> findByGrupo(Integer idGrupo){
         return repository.findByGrupo_Id(idGrupo);
     }
 
+    public List<Encontro> findUpcomingEncontrosByGrupo(Integer idGrupo){
+        return repository.findUpcomingEncontrosByGrupo_Id(idGrupo);
+    }
+
     public List<Encontro> findByTurma(Integer idTurma){
         return repository.findByTurma_Id(idTurma);
+    }
+
+    public List<Encontro> findUpcomingEncontrosByTurma(Integer idTurma){
+        return repository.findUpcomingEncontrosByTurma_Id(idTurma);
     }
 
     public Page<Encontro> encontroPageable(SearchFilter searchFilter) {

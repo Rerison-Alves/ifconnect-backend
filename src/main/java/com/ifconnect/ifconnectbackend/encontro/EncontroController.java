@@ -74,6 +74,20 @@ public class EncontroController {
         return ok().body(service.findAll());
     }
 
+    @Operation(summary = "List of encontros by user.", description = "List of encontros by user.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.OK)
+    @GetMapping("/user-upcoming/{id}")
+    public ResponseEntity<List<Encontro>> getUpcomingEncontrosByUser(@PathVariable(value = "id") Integer idUser){
+        return ok().body(service.findUpcomingEncontrosByUser(idUser));
+    }
+
     @Operation(summary = "List of encontros by grupo.", description = "List of encontros by grupo.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
@@ -88,6 +102,20 @@ public class EncontroController {
         return ok().body(service.findByGrupo(idGrupo));
     }
 
+    @Operation(summary = "List of upcoming encontros by grupo.", description = "List of encontros by grupo.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.OK)
+    @GetMapping("/grupo-upcoming/{id}")
+    public ResponseEntity<List<Encontro>> getUpcomingEncontrosByGrupo(@PathVariable(value = "id") Integer idGrupo) {
+        return ok().body(service.findUpcomingEncontrosByGrupo(idGrupo));
+    }
+
     @Operation(summary = "List of encontros by turma.", description = "List of encontros by turma.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
@@ -100,6 +128,20 @@ public class EncontroController {
     @GetMapping("/turma/{id}")
     public ResponseEntity<List<Encontro>> getByTurma(@PathVariable(value = "id") Integer idTurma) {
         return ok().body(service.findByTurma(idTurma));
+    }
+
+    @Operation(summary = "List of upcoming encontros by turma.", description = "List of encontros by turma.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.OK)
+    @GetMapping("/turma-upcoming/{id}")
+    public ResponseEntity<List<Encontro>> getUpcomingEncontrosByTurma(@PathVariable(value = "id") Integer idTurma) {
+        return ok().body(service.findUpcomingEncontrosByTurma(idTurma));
     }
 
     @Operation(summary = "The list of encontros Pageable.", description = "Returns the list of entities.")

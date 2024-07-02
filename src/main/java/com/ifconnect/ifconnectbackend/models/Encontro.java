@@ -23,7 +23,6 @@ public class Encontro {
     @Size(min = 3, max = 100, message = "${size}")
     private String tema;
 
-    @NotBlank(message = "Descrição ${notblank}")
     @Size(max = 255, message = "Descrição ${maxsize}")
     private String descricao;
 
