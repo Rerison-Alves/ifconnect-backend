@@ -14,9 +14,13 @@ public interface TurmaRepository extends JpaRepository<Turma, Integer> {
     @Query("SELECT g FROM Turma g WHERE g.admin.id = :adminId")
     List<Turma> findByAdmin(Integer adminId);
 
-    @Query("SELECT DISTINCT g FROM Turma g JOIN g.usuarios u " +
+    @Query("SELECT DISTINCT t FROM Turma t JOIN t.usuarios u JOIN t.curso c " +
             "WHERE (:userId is null or u.id = :userId) " +
-            "AND (:searchTerm is null or LOWER(g.nome) like %:searchTerm%) " +
-            "OR cast(g.id as string) = :searchTerm")
-    Page<Turma> searchPageable(@Param("userId") Integer userId, @Param("searchTerm") String searchTerm, Pageable pageable);
+            "AND (:cursoId is null or c.id = :cursoId) " +
+            "AND (:searchTerm is null or LOWER(t.nome) like %:searchTerm%) " +
+            "OR cast(t.id as string) = :searchTerm")
+    Page<Turma> searchPageable(@Param("userId") Integer userId,
+                               @Param("cursoId") Integer cursoId,
+                               @Param("searchTerm") String searchTerm,
+                               Pageable pageable);
 }

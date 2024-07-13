@@ -18,8 +18,6 @@ public class GrupoService {
 
     private final GrupoRepository repository;
 
-    private final UsuarioRepository usuarioRepository;
-
     @Transactional
     public Grupo saveOrUpdate(Grupo entity) {
         return repository.saveAndFlush(entity);
@@ -35,8 +33,8 @@ public class GrupoService {
         return repository.findAll();
     }
 
-    public Page<Grupo> gruposPageable(Integer userId, SearchFilter searchFilter) {
-        return repository.searchPageable(userId, searchFilter.getFilter().get(),
+    public Page<Grupo> gruposPageable(Integer userId, Integer cursoId, SearchFilter searchFilter) {
+        return repository.searchPageable(userId, cursoId, searchFilter.getFilter().get(),
                 PageRequest.of(searchFilter.getPage(), searchFilter.getSize(), searchFilter.getDirection(), searchFilter.getOrder()));
     }
 

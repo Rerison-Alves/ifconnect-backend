@@ -18,8 +18,6 @@ public class TurmaService {
 
     private final TurmaRepository repository;
 
-    private final UsuarioRepository usuarioRepository;
-
     @Transactional
     public Turma saveOrUpdate(Turma entity) {
         return repository.saveAndFlush(entity);
@@ -35,8 +33,8 @@ public class TurmaService {
         return repository.findAll();
     }
 
-    public Page<Turma> turmasPageable(Integer userId, SearchFilter searchFilter) {
-        return repository.searchPageable(userId, searchFilter.getFilter().get(),
+    public Page<Turma> turmasPageable(Integer userId, Integer cursoId, SearchFilter searchFilter) {
+        return repository.searchPageable(userId, cursoId,searchFilter.getFilter().get(),
                 PageRequest.of(searchFilter.getPage(), searchFilter.getSize(), searchFilter.getDirection(), searchFilter.getOrder()));
     }
 

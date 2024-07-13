@@ -23,10 +23,10 @@ public class Turma extends Agrupamento{
     private String disciplina;
 
     @NotNull(message = "Turno ${notblank}")
+    @Enumerated(EnumType.STRING)
     private Turno turno;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @ToString.Exclude
     @JoinTable(name = "usuario_turma",
             joinColumns = @JoinColumn(name = "id_turma"),
             inverseJoinColumns = @JoinColumn(name = "id_usuario"))

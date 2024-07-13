@@ -21,7 +21,6 @@ public class Grupo extends Agrupamento{
     private String areadeEstudo;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @ToString.Exclude
     @JoinTable(name = "usuario_grupo",
             joinColumns = @JoinColumn(name = "id_grupo"),
             inverseJoinColumns = @JoinColumn(name = "id_usuario"))

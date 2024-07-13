@@ -102,6 +102,7 @@ public class GrupoController {
     @GetMapping("search")
     public ResponseEntity<Page<Grupo>> search(@RequestParam("searchTerm") String searchTerm,
                                               @RequestParam(value = "userId", required = false) Integer userId,
+                                              @RequestParam(value = "cursoId", required = false) Integer cursoId,
                                               @RequestParam(value = "order", required = false, defaultValue = "nome") String order,
                                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                               @RequestParam(value = "size", required = false, defaultValue = "10") int size) {
@@ -112,7 +113,7 @@ public class GrupoController {
                     throw new IllegalArgumentException("The sent sorting field is invalid. Available fields: 'id' and 'nome.");
                 })
         );
-        return ResponseEntity.ok(service.gruposPageable(userId, searchFilter));
+        return ResponseEntity.ok(service.gruposPageable(userId, cursoId, searchFilter));
     }
 
     @Operation(summary = "Update grupo", description = "Return Update grupo")

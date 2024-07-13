@@ -56,11 +56,11 @@ public class Usuario implements UserDetails {
     private Professor professor;
 
     @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @JsonIgnore
     private Set<Grupo> grupos;
 
     @ManyToMany(mappedBy = "usuarios", fetch = FetchType.LAZY)
-    @ToString.Exclude
+    @JsonIgnore
     private Set<Turma> turmas;
 
     @Enumerated(EnumType.STRING)
