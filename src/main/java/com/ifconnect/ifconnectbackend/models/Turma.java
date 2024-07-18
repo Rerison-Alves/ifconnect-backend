@@ -10,7 +10,8 @@ import lombok.*;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -26,7 +27,7 @@ public class Turma extends Agrupamento{
     @Enumerated(EnumType.STRING)
     private Turno turno;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_turma",
             joinColumns = @JoinColumn(name = "id_turma"),
             inverseJoinColumns = @JoinColumn(name = "id_usuario"))

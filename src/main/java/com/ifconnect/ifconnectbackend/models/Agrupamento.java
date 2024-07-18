@@ -1,5 +1,7 @@
 package com.ifconnect.ifconnectbackend.models;
 
+import com.ifconnect.ifconnectbackend.models.enums.TipoAgrupamento;
+import com.ifconnect.ifconnectbackend.models.enums.Turno;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -32,5 +34,9 @@ public abstract class Agrupamento {
     @ManyToOne
     @JoinColumn(name = "id_curso", referencedColumnName = "id")
     private Curso curso;
+
+    @NotNull(message = "Tipo de agrupamento ${notblank}")
+    @Enumerated(EnumType.STRING)
+    private TipoAgrupamento tipoAgrupamento;
 
 }

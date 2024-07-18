@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface TurmaRepository extends JpaRepository<Turma, Integer> {
 
-    @Query("SELECT g FROM Turma g WHERE g.admin.id = :adminId")
+    @Query("SELECT t FROM Turma t WHERE t.admin.id = :adminId")
     List<Turma> findByAdmin(Integer adminId);
 
     @Query("SELECT DISTINCT t FROM Turma t JOIN t.usuarios u JOIN t.curso c " +

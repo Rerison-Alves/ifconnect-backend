@@ -8,7 +8,8 @@ import lombok.*;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,7 +21,7 @@ public class Grupo extends Agrupamento{
     @Size(min = 3, max = 100, message = "${size}")
     private String areadeEstudo;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "usuario_grupo",
             joinColumns = @JoinColumn(name = "id_grupo"),
             inverseJoinColumns = @JoinColumn(name = "id_usuario"))
