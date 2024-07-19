@@ -49,9 +49,9 @@ public class UsuarioService {
     }
     
     public void changePassword(ChangePasswordRequest request) {
-        Usuario user = repository.findByEmail(request.getUserEmail()).orElseThrow(() -> {
-            throw new NoResultException("Ops! Esse usuário foi encontrado! :(");
-        });
+        Usuario user = repository.findByEmail(request.getUserEmail()).orElseThrow(() ->
+                new NoResultException("Ops! Esse usuário não foi encontrado! :(")
+        );
 
         Code code = codeService.find(request.getCode(), user);
 
@@ -72,9 +72,18 @@ public class UsuarioService {
     }
 
     public void changePasswordCode(String email){
-        Usuario user = repository.findByEmail(email).orElseThrow(() -> {
-            throw new NoResultException("Ops! Esse usuário foi encontrado! :(");
-        });
+        Usuario user = repository.findByEmail(email).orElseThrow(() ->
+                new NoResultException("Ops! Esse usuário não foi encontrado! :(")
+        );
         codeService.generateAndSendCode(user);
+    }
+
+    public void changeProfileImage(String fotoPerfilBase64, Integer usuarioId){
+        Usuario user = repository.findById(usuarioId).orElseThrow(() ->
+                new NoResultException("Ops! Usuário não foi encontrado! :(")
+        );
+
+        user.setFotoPerfilBase64(fotoPerfilBase64);
+        repository.save(user);
     }
 }

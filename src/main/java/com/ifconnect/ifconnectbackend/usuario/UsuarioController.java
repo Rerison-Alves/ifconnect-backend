@@ -168,4 +168,28 @@ public class UsuarioController {
             );
         }
     }
+
+    @Operation(summary = "Update usuario profile image", description = "Update usuario profile image")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @PatchMapping("/change-profile-image")
+    public ResponseEntity<?> changeProfileImage(@RequestParam(value = "fotoPerfilBase64") String fotoPerfilBase64, Authentication authentication){
+        try {
+            service.changeProfileImage(fotoPerfilBase64, ((Usuario)authentication.getPrincipal()).getId());
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ErrorDetails(
+                            new Date(),
+                            e.getMessage(),
+                            HttpStatus.BAD_REQUEST.name())
+            );
+        }
+    }
 }
