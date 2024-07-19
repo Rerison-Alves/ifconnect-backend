@@ -22,7 +22,8 @@ public class Curso {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank
+    @NotBlank(message = "Icone ${notblank}")
+    @Column(columnDefinition = "TEXT")
     private String iconeBase64;
 
     @NotBlank(message = "Descrição ${notblank}")
