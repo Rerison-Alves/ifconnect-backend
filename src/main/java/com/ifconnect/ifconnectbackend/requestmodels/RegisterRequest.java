@@ -20,7 +20,6 @@ public class RegisterRequest {
   private String nome;
   private String email;
   private String password;
-  private String fotoPerfilBase64;
   @JsonFormat(pattern="dd/MM/yyyy")
   private Date dataNasc;
   private Aluno aluno;

@@ -45,7 +45,6 @@ public class AuthenticationService {
     var user = Usuario.builder()
             .nome(request.getNome())
             .password(passwordEncoder.encode(request.getPassword()!=null?request.getPassword():null))
-            .fotoPerfilBase64(request.getFotoPerfilBase64())
             .enabled(false)
             .email(request.getEmail())
             .dataNasc(request.getDataNasc())
