@@ -169,6 +169,29 @@ public class UsuarioController {
         }
     }
 
+    @Operation(summary = "Usuario profile image", description = "Getting usuario profile image")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @GetMapping("/profile-image")
+    public ResponseEntity<?> getProfileImage(Authentication authentication){
+        try {
+            return ResponseEntity.ok().body(service.findProfileImage(((Usuario)authentication.getPrincipal()).getId()));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ErrorDetails(
+                            new Date(),
+                            e.getMessage(),
+                            HttpStatus.BAD_REQUEST.name())
+            );
+        }
+    }
+
     @Operation(summary = "Update usuario profile image", description = "Update usuario profile image")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Request Ok"),
@@ -178,10 +201,34 @@ public class UsuarioController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.NO_CONTENT)
-    @PatchMapping("/change-profile-image")
-    public ResponseEntity<?> changeProfileImage(@RequestParam(value = "fotoPerfilBase64") String fotoPerfilBase64, Authentication authentication){
+    @PutMapping("/profile-image")
+    public ResponseEntity<?> changeProfileImage(@RequestBody String fotoPerfilBase64, Authentication authentication){
         try {
             service.changeProfileImage(fotoPerfilBase64, ((Usuario)authentication.getPrincipal()).getId());
+            return ResponseEntity.ok().build();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(
+                    new ErrorDetails(
+                            new Date(),
+                            e.getMessage(),
+                            HttpStatus.BAD_REQUEST.name())
+            );
+        }
+    }
+
+    @Operation(summary = "Delete usuario profile image", description = "Delete usuario profile image")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Request Ok"),
+            @ApiResponse(responseCode = "401", description = "Not authenticated agent (missing or invalid credentials)"),
+            @ApiResponse(responseCode = "403", description = "Ops! You do not have permission to access this feature! :("),
+            @ApiResponse(responseCode = "404", description = "Resource not found"),
+            @ApiResponse(responseCode = "500", description = "Internal server error",
+                    content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
+    @DeleteMapping("/profile-image")
+    public ResponseEntity<?> deleteProfileImage(Authentication authentication){
+        try {
+            service.deleteProfileImage(((Usuario)authentication.getPrincipal()).getId());
             return ResponseEntity.ok().build();
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(

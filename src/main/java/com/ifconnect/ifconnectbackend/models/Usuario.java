@@ -45,6 +45,7 @@ public class Usuario implements UserDetails {
     private String email;
 
     @Column(columnDefinition = "TEXT")
+    @JsonIgnore
     private String fotoPerfilBase64;
 
     @JsonFormat(pattern="dd/MM/yyyy")

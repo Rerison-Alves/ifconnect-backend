@@ -14,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -78,12 +79,33 @@ public class UsuarioService {
         codeService.generateAndSendCode(user);
     }
 
+    public String findProfileImage(Integer usuarioId){
+        Usuario user = repository.findById(usuarioId).orElseThrow(() ->
+                new NoResultException("Ops! Usuário não foi encontrado! :(")
+        );
+
+        String profileImage = user.getFotoPerfilBase64();
+        if(profileImage!=null)
+            return profileImage;
+        else
+            throw new NullPointerException("Ops! Usuário não possui uma imagem! :(");
+    }
+
     public void changeProfileImage(String fotoPerfilBase64, Integer usuarioId){
         Usuario user = repository.findById(usuarioId).orElseThrow(() ->
                 new NoResultException("Ops! Usuário não foi encontrado! :(")
         );
 
         user.setFotoPerfilBase64(fotoPerfilBase64);
+        repository.save(user);
+    }
+
+    public void deleteProfileImage(Integer usuarioId){
+        Usuario user = repository.findById(usuarioId).orElseThrow(() ->
+                new NoResultException("Ops! Usuário não foi encontrado! :(")
+        );
+
+        user.setFotoPerfilBase64(null);
         repository.save(user);
     }
 }
