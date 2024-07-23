@@ -25,4 +25,7 @@ public class Local {
 
     @NotBlank(message = "${notblank}")
     private String localizacao;
+
+    @Column(columnDefinition = "TEXT")
+    private String iconeBase64;
 }

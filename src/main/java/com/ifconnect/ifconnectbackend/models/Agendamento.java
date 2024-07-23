@@ -1,6 +1,7 @@
 package com.ifconnect.ifconnectbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.JoinColumn;
@@ -16,6 +17,7 @@ import java.time.LocalDateTime;
 public class Agendamento {
     @ManyToOne
     @JoinColumn(name = "id_local", referencedColumnName = "id")
+    @JsonIgnoreProperties("iconeBase64")
     private Local local;
 
     @Column(nullable = false)
