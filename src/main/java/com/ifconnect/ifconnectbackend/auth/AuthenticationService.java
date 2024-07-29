@@ -25,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Optional;
 
 @Service
@@ -66,7 +67,7 @@ public class AuthenticationService {
   public String confirmToken(String token) {
     try {
       Token confirmationToken = getToken(tokenRepository.findByValue(token));
-      tokenRepository.updateConfirmedAt(token, LocalDateTime.now());
+      tokenRepository.updateConfirmedAt(token, LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
       repository.enableUsuario(confirmationToken.getUsuario().getEmail());
       return emailSender.confirmedPage();
     } catch (IllegalStateException e){

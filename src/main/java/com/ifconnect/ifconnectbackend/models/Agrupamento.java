@@ -1,5 +1,6 @@
 package com.ifconnect.ifconnectbackend.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ifconnect.ifconnectbackend.models.enums.TipoAgrupamento;
 import com.ifconnect.ifconnectbackend.models.enums.Turno;
 import jakarta.persistence.*;
@@ -33,6 +34,7 @@ public abstract class Agrupamento {
 
     @ManyToOne
     @JoinColumn(name = "id_curso", referencedColumnName = "id")
+    @JsonIgnoreProperties("iconeBase64")
     private Curso curso;
 
     @NotNull(message = "Tipo de agrupamento ${notblank}")

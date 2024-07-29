@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @Service
@@ -33,7 +35,8 @@ public class EncontroService {
     }
 
     public List<Encontro> findUpcomingEncontrosByUser(Integer idUser){
-        return repository.findUpcomingEncontrosByUser_Id(idUser);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        return repository.findUpcomingEncontrosByUser_Id(idUser, now);
     }
 
     public List<Encontro> findByGrupo(Integer idGrupo){
@@ -41,7 +44,8 @@ public class EncontroService {
     }
 
     public List<Encontro> findUpcomingEncontrosByGrupo(Integer idGrupo){
-        return repository.findUpcomingEncontrosByGrupo_Id(idGrupo);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        return repository.findUpcomingEncontrosByGrupo_Id(idGrupo, now);
     }
 
     public List<Encontro> findByTurma(Integer idTurma){
@@ -49,7 +53,8 @@ public class EncontroService {
     }
 
     public List<Encontro> findUpcomingEncontrosByTurma(Integer idTurma){
-        return repository.findUpcomingEncontrosByTurma_Id(idTurma);
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
+        return repository.findUpcomingEncontrosByTurma_Id(idTurma, now);
     }
 
     public Page<Encontro> encontroPageable(SearchFilter searchFilter) {
