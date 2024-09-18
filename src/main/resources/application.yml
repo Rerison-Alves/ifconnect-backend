@@ -11,6 +11,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        search.backend.directory.root: indexes
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect
   mail:

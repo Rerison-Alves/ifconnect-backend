@@ -113,7 +113,7 @@ public class GrupoController {
                     throw new IllegalArgumentException("The sent sorting field is invalid. Available fields: 'id' and 'nome.");
                 })
         );
-        return ResponseEntity.ok(service.gruposPageable(userId, cursoId, searchFilter));
+        return ResponseEntity.ok(service.search(userId, cursoId, searchFilter));
     }
 
     @Operation(summary = "Update grupo", description = "Return Update grupo")

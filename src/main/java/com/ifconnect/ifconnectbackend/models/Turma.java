@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import java.util.Set;
 
@@ -21,6 +22,7 @@ public class Turma extends Agrupamento{
 
     @NotBlank(message = "${notblank}")
     @Size(min = 3, max = 100, message = "${size}")
+    @FullTextField
     private String disciplina;
 
     @NotNull(message = "Turno ${notblank}")

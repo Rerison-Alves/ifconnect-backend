@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class Grupo extends Agrupamento{
 
     @NotBlank(message = "Área de estudo ${notblank}")
     @Size(min = 3, max = 100, message = "${size}")
+    @FullTextField
     private String areadeEstudo;
 
     @ManyToMany(fetch = FetchType.EAGER)
