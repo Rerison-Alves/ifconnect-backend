@@ -99,7 +99,7 @@ public class GrupoController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping("search")
+    @GetMapping("/search")
     public ResponseEntity<Page<Grupo>> search(@RequestParam("searchTerm") String searchTerm,
                                               @RequestParam(value = "userId", required = false) Integer userId,
                                               @RequestParam(value = "cursoId", required = false) Integer cursoId,

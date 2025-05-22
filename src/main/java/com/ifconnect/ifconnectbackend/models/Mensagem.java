@@ -1,7 +1,6 @@
 package com.ifconnect.ifconnectbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.ifconnect.ifconnectbackend.models.enums.MessageType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,11 +40,12 @@ public class Mensagem {
     @Lob
     private String pdfBase64;
 
-    @NotNull(message = "MessageType ${notblank}")
-    @Enumerated(EnumType.STRING)
-    private MessageType messageType;
-
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")
     private LocalDateTime data;
 
+    public Mensagem(Usuario usuario, String texto, LocalDateTime data) {
+        this.usuario = usuario;
+        this.texto = texto;
+        this.data = data;
+    }
 }

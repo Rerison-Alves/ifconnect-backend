@@ -68,7 +68,7 @@ public class MensagemController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping("search")
+    @GetMapping("/search")
     public ResponseEntity<Page<Mensagem>> search(@RequestParam("encontroId") Integer encontroId,
                                                  @RequestParam(value = "order", required = false, defaultValue = "data") String order,
                                                  @RequestParam(value = "page", required = false, defaultValue = "0") int page,
