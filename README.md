@@ -1,3 +1,7 @@
+# Docker Configurations
+
+$ docker run --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_ROOT_PASSWORD=postgres -e TZ=America/Fortaleza -d postgres:latest
+
 # SchemaSpy comands
 
 $ docker pull schemaspy/schemaspy
