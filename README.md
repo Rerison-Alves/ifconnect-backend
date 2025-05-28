@@ -1,20 +1,21 @@
 # Docker Configurations
 ```
-  $ docker run --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_ROOT_PASSWORD=postgres -e TZ=America/Fortaleza -d postgres:latest
+docker run --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_ROOT_PASSWORD=postgres -e TZ=America/Fortaleza -d postgres:latest
 ```
 
 # SchemaSpy comands
 
 ```
-  $ docker pull schemaspy/schemaspy
-
-  $ java -jar schemaspy.jar -vizjs -t pgsql -db ifconnectdb -host localhost -port 5432 -dp postgresjdbcdriver.jar -u postgres -p postgres -o schemaspy
+docker pull schemaspy/schemaspy
+```
+```
+java -jar schemaspy.jar -vizjs -t pgsql -db ifconnectdb -host localhost -port 5432 -dp postgresjdbcdriver.jar -u postgres -p postgres -o schemaspy
 ```
 
 # How run Ngrok
 
 ```
-  $ ./ngrok http http://localhost:8080
+./ngrok http http://localhost:8080
 ```
 
 # Swagger acess
