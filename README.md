@@ -20,11 +20,15 @@ java -jar schemaspy.jar -vizjs -t pgsql -db ifconnectdb -host localhost -port 54
 
 # Swagger acess
 
--> http://localhost:8080/swagger-ui/index.html#/
+```
+http://localhost:8080/swagger-ui/index.html#/
+```
+-> The application will be available at
+```
+http://localhost:8080.
+```
 
--> The application will be available at http://localhost:8080.
-
-# Railway properties
+# Production properties
 
 ```properties
 spring_profiles_active=prod
