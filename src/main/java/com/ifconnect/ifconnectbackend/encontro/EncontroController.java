@@ -153,7 +153,7 @@ public class EncontroController {
             @ApiResponse(responseCode = "500", description = "Internal server error",
                     content = {@Content(mediaType = "application/json", schema = @Schema(implementation = ErrorDetails.class))})})
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping("search")
+    @GetMapping("/search")
     public ResponseEntity<Page<Encontro>> search(@RequestParam("searchTerm") String searchTerm,
                                               @RequestParam(value = "order", required = false, defaultValue = "descricao") String order,
                                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,

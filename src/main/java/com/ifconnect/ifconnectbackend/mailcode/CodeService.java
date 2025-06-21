@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.Random;
 
@@ -41,7 +42,7 @@ public class CodeService {
         code.setValue(codeValue);
         code.setExpired(false);
         code.setUsuario(usuario);
-        code.setCreatedAt(LocalDateTime.now());
+        code.setCreatedAt(LocalDateTime.now(ZoneId.of("America/Sao_Paulo")));
 
         // Salvar o código no banco de dados
         codeRepository.save(code);
@@ -64,7 +65,7 @@ public class CodeService {
     @Scheduled(fixedDelay = 60000) // executar a cada 60 segundos
     private void scheduleCodeExpiration() {
         List<Code> codes = codeRepository.findByExpiredFalse();
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now(ZoneId.of("America/Sao_Paulo"));
         for (Code code : codes) {
             LocalDateTime expirationTime = code.getCreatedAt().plusMinutes(15);
             if (now.isAfter(expirationTime)) {

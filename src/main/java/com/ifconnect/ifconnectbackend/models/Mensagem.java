@@ -1,6 +1,7 @@
 package com.ifconnect.ifconnectbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -26,16 +27,17 @@ public class Mensagem {
     @ManyToOne
     @NotNull(message = "Encontro ${notblank}")
     @JoinColumn(name = "id_encontro", nullable = false)
+    @JsonIgnoreProperties({"tema", "descricao", "agendamento", "grupo", "turma"})
     private Encontro encontro;
 
     @ManyToOne
     @NotNull(message = "Usuario ${notblank}")
     @JoinColumn(name = "id_user", nullable = false)
+    @JsonIgnoreProperties({"email", "dataNasc", "aluno", "professpr"})
     private Usuario usuario;
 
     @NotBlank(message = "${notblank}")
-    @Column(nullable = false)
-    @Lob
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String texto;
 
     @Lob
@@ -44,4 +46,9 @@ public class Mensagem {
     @JsonFormat(pattern="dd/MM/yyyy HH:mm")
     private LocalDateTime data;
 
+    public Mensagem(Usuario usuario, String texto, LocalDateTime data) {
+        this.usuario = usuario;
+        this.texto = texto;
+        this.data = data;
+    }
 }
